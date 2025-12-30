@@ -1,0 +1,27 @@
+[package]
+name = "taxii-db"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+authors.workspace = true
+homepage.workspace = true
+description = "Database layer with SQLx for TAXII server"
+publish = false
+
+[lints]
+workspace = true
+
+[dependencies]
+taxii-core.workspace = true
+sqlx.workspace = true
+uuid.workspace = true
+chrono.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+thiserror.workspace = true
+tracing.workspace = true
+base64.workspace = true
+
+[dev-dependencies]
+tokio = { workspace = true, features = ["rt-multi-thread", "macros"] }

@@ -1,0 +1,127 @@
+# DARWIS TAXII - Full Configuration (Template)
+# =============================================
+#
+# Use this for TAXII 1.x setup (services + collections + accounts).
+# For TAXII 2.x only, see accounts.yaml instead.
+#
+# Setup:
+#   1. cp examples/data-config/full.yaml data-config.yaml
+#   2. Edit data-config.yaml with your settings
+#   3. taxii-cli sync data-config.yaml
+#
+# TAXII 1.x vs TAXII 2.x:
+#
+#   TAXII 1.x:
+#     - Services, collections, accounts: ALL configured in this file
+#     - Collection identifier: name (string)
+#
+#   TAXII 2.x:
+#     - API roots & collections: Created via CLI (not in this file)
+#     - Account permissions: Use collection UUID
+#
+# Quick TAXII 2.x setup:
+#   taxii-cli api-root add --title "My API Root" --default
+#   taxii-cli collection add --api-root-id <uuid> --title "My Collection"
+#   taxii-cli collection list --api-root-id <uuid>  # Get collection UUIDs
+
+# =============================================================================
+# TAXII 1.x Services
+# =============================================================================
+# Service types: DISCOVERY, INBOX, POLL, COLLECTION_MANAGEMENT
+
+services:
+  - id: discovery
+    type: DISCOVERY
+    properties:
+      path: /services/discovery
+      description: Discovery service - lists available services
+
+  - id: inbox
+    type: INBOX
+    properties:
+      path: /services/inbox
+      description: Inbox service - receives threat intelligence
+      destination_collections:
+        - my-collection           # Must match a collection name below
+
+  - id: poll
+    type: POLL
+    properties:
+      path: /services/poll
+      description: Poll service - retrieves threat intelligence
+
+  - id: collection-mgmt
+    type: COLLECTION_MANAGEMENT
+    properties:
+      path: /services/collection-management
+      description: Collection management - lists available collections
+
+# =============================================================================
+# TAXII 1.x Collections
+# =============================================================================
+# Collection types: DATA_FEED (read-only), DATA_SET (read-write)
+# The 'name' is the collection identifier for TAXII 1.x
+
+collections:
+  - name: my-collection
+    description: Primary threat intelligence collection
+    type: DATA_FEED
+    available: true
+    accept_all_content: true
+    service_ids:
+      - inbox
+      - poll
+      - collection-mgmt
+    supported_content:
+      - binding: urn:stix.mitre.org:xml:1.1.1
+      - binding: urn:stix.mitre.org:xml:1.2
+
+  - name: another-collection
+    description: Secondary collection
+    type: DATA_SET
+    available: true
+    accept_all_content: true
+    service_ids:
+      - inbox
+      - poll
+
+# =============================================================================
+# User Accounts
+# =============================================================================
+# Permissions format (both work):
+#   String: read, modify
+#   Array:  [read], [read, write]
+#
+# Collection keys:
+#   TAXII 1.x: collection name (e.g., my-collection)
+#   TAXII 2.x: collection UUID (e.g., 86c1741e-7e95-4b17-8940-a8f83eb5fe32)
+
+accounts:
+  # Admin - full access to all collections
+  - username: admin
+    password: changeme
+    is_admin: true
+
+  # Regular user with TAXII 1.x permissions
+  - username: analyst
+    password: analyst123
+    is_admin: false
+    permissions:
+      my-collection: [read, write]
+      another-collection: read
+
+  # Read-only user
+  - username: reader
+    password: reader123
+    is_admin: false
+    permissions:
+      my-collection: read
+      another-collection: read
+
+  # Example: User with both TAXII 1.x and 2.x permissions
+  # - username: hybrid-user
+  #   password: hybrid123
+  #   is_admin: false
+  #   permissions:
+  #     my-collection: [read, write]              # TAXII 1.x (by name)
+  #     86c1741e-...-a8f83eb5fe32: [read, write]  # TAXII 2.x (by UUID)

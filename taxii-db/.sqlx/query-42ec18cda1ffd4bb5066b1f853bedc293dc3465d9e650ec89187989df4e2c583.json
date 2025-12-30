@@ -1,0 +1,14 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "DELETE FROM opentaxii_job WHERE completed_timestamp < $1",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Timestamp"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "42ec18cda1ffd4bb5066b1f853bedc293dc3465d9e650ec89187989df4e2c583"
+}

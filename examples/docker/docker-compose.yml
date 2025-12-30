@@ -1,0 +1,34 @@
+services:
+  db:
+    image: postgres:9.4
+    # container_name: taxii-postgres
+    restart: always
+    environment:
+      POSTGRES_USER: dbuser
+      POSTGRES_PASSWORD: dbPass
+      POSTGRES_DB: opentaxii
+    volumes:
+      - ./volumes/db:/var/lib/postgresql/data
+    networks:
+      - taxiinet
+
+  taxii-server:
+    build:
+      context: ../..
+      dockerfile: examples/docker/Dockerfile
+    # container_name: taxii-server
+    depends_on:
+      - db
+    environment:
+      DARWIS_TAXII_DB_CONNECTION: "postgresql://dbuser:dbPass@db:5432/opentaxii"
+      RUST_LOG: "info"
+    volumes:
+      - ./config:/app/config:ro
+    networks:
+      - taxiinet
+    ports:
+      - "9000:9000"
+    restart: unless-stopped
+
+networks:
+  taxiinet:

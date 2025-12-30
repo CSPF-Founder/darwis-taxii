@@ -1,0 +1,25 @@
+[package]
+name = "taxii-2x"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+authors.workspace = true
+homepage.workspace = true
+description = "TAXII 2.x JSON REST API implementation"
+publish = false
+
+[lints]
+workspace = true
+
+[dependencies]
+taxii-core.workspace = true
+taxii-db.workspace = true
+stix2.workspace = true
+axum.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+uuid.workspace = true
+chrono.workspace = true
+thiserror.workspace = true
+tracing.workspace = true

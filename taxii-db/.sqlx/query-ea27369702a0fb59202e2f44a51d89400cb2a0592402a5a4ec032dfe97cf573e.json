@@ -1,0 +1,76 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "UPDATE data_collections\n               SET name = $2, type = $3, description = $4, available = $5,\n                   accept_all_content = $6, bindings = $7\n               WHERE id = $1\n               RETURNING id, name as \"name!\", type as \"collection_type!\", description,\n                         accept_all_content as \"accept_all_content!\", bindings,\n                         available as \"available!\", volume as \"volume!\", date_created as \"date_created!\"",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "id",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 1,
+        "name": "name!",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 2,
+        "name": "collection_type!",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 3,
+        "name": "description",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 4,
+        "name": "accept_all_content!",
+        "type_info": "Bool"
+      },
+      {
+        "ordinal": 5,
+        "name": "bindings",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 6,
+        "name": "available!",
+        "type_info": "Bool"
+      },
+      {
+        "ordinal": 7,
+        "name": "volume!",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 8,
+        "name": "date_created!",
+        "type_info": "Timestamptz"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Int4",
+        "Varchar",
+        "Varchar",
+        "Text",
+        "Bool",
+        "Bool",
+        "Text"
+      ]
+    },
+    "nullable": [
+      false,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true
+    ]
+  },
+  "hash": "ea27369702a0fb59202e2f44a51d89400cb2a0592402a5a4ec032dfe97cf573e"
+}

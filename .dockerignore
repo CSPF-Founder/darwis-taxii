@@ -1,0 +1,15 @@
+# Build artifacts
+target/
+
+# Docker volumes
+examples/docker/volumes/
+
+# IDE
+.idea/
+.vscode/
+
+# Git
+.git/
+
+# Misc
+*.log

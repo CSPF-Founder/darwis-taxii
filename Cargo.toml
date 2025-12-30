@@ -1,0 +1,111 @@
+[workspace]
+resolver = "3"
+members = [
+    "taxii-core",
+    "taxii-db",
+    "taxii-auth",
+    "taxii-1x",
+    "taxii-2x",
+    "taxii-server",
+    "taxii-cli",
+    "stix2",
+]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2024"
+license = "BSD-3-Clause"
+rust-version = "1.85"
+authors = ["Cyber Security and Privacy Foundation"]
+homepage = "https://cysecurity.org/"
+
+[workspace.dependencies]
+# Async runtime (latest stable)
+tokio = { version = "1.48", features = ["full"] }
+tokio-util = "0.7"
+futures = "0.3"
+
+# Web framework (latest stable)
+axum = { version = "0.8", features = ["macros"] }
+tower = "0.5"
+tower-http = { version = "0.6", features = ["cors", "trace", "timeout", "catch-panic"] }
+
+# Database (SQLx latest - type-safe, no ORM)
+sqlx = { version = "0.8", default-features = false, features = [
+    "postgres",
+    "chrono",
+    "json",
+    "uuid",
+    "migrate",
+    "macros",
+    "derive",
+    "runtime-tokio-rustls",
+] }
+
+# Serialization (latest)
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+config = "0.15"
+toml = "0.9"
+
+# XML parsing (TAXII 1.x)
+quick-xml = { version = "0.38", features = ["serialize", "serde"] }
+
+# Authentication
+jsonwebtoken = { version = "10", default-features = false, features = ["rust_crypto"] }
+pbkdf2 = "0.12"
+sha2 = "0.10"
+hex = "0.4"
+
+# ! NOTE: Don't use argon2 yet to be compatible with python
+# argon2 = "0.5"
+
+
+# Other (latest versions)
+uuid = { version = "1", features = ["v4", "serde"] }
+chrono = { version = "0.4", features = ["serde"] }
+thiserror = "2.0"
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter", "json"] }
+tracing-appender = "0.2"
+base64 = "0.22"
+regex = "1"
+
+# CLI
+clap = { version = "4", features = ["derive", "env", "color"] }
+serde_yaml = { package = "serde_yaml_bw", version = "2.5" }
+
+# Local crates
+taxii-core = { path = "taxii-core" }
+taxii-db = { path = "taxii-db" }
+taxii-auth = { path = "taxii-auth" }
+taxii-1x = { path = "taxii-1x" }
+taxii-2x = { path = "taxii-2x" }
+taxii-server = { path = "taxii-server" }
+stix2 = { path = "stix2", features = ["taxii"] }
+
+[profile.release]
+lto = true
+codegen-units = 1
+panic = "abort"
+strip = true
+opt-level = 3
+
+
+[workspace.lints.rust]
+unsafe_code = "forbid"
+
+[workspace.lints.clippy]
+# Deny unwrap/expect/panic in production code
+unwrap_used = "deny"
+expect_used = "deny"
+panic = "deny"
+
+# Style and readability
+wildcard_imports = "warn"
+clone_on_copy = "warn"
+dbg_macro = "deny"
+
+# Encourage explicitness
+implicit_clone = "warn"
+redundant_clone = "warn"

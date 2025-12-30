@@ -1,0 +1,68 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "INSERT INTO content_blocks (timestamp_label, inbox_message_id, content, binding_id, binding_subtype)\n               VALUES ($1, $2, $3, $4, $5)\n               RETURNING id, message, timestamp_label as \"timestamp_label!\", inbox_message_id, content,\n                         binding_id, binding_subtype, date_created as \"date_created!\"",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "id",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 1,
+        "name": "message",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 2,
+        "name": "timestamp_label!",
+        "type_info": "Timestamptz"
+      },
+      {
+        "ordinal": 3,
+        "name": "inbox_message_id",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 4,
+        "name": "content",
+        "type_info": "Bytea"
+      },
+      {
+        "ordinal": 5,
+        "name": "binding_id",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 6,
+        "name": "binding_subtype",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 7,
+        "name": "date_created!",
+        "type_info": "Timestamptz"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Timestamptz",
+        "Int4",
+        "Bytea",
+        "Varchar",
+        "Varchar"
+      ]
+    },
+    "nullable": [
+      false,
+      true,
+      true,
+      true,
+      false,
+      true,
+      true,
+      true
+    ]
+  },
+  "hash": "150cfe03b7d127ae382836beea69a9a8b7418a63948412ff1ed5425450af398b"
+}

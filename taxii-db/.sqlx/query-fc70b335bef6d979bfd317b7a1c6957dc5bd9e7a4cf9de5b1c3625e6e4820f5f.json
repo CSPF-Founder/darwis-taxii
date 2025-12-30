@@ -1,0 +1,71 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "INSERT INTO opentaxii_stixobject (pk, id, collection_id, type, spec_version, date_added, version, serialized_data)\n               VALUES ($1, $2, $3, $4, $5, $6, $7, $8::json)\n               RETURNING pk, id as \"id!\", collection_id as \"collection_id!\", type as \"stix_type!\",\n                         spec_version as \"spec_version!\", date_added as \"date_added!\", version as \"version!\",\n                         serialized_data as \"serialized_data!\"",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "pk",
+        "type_info": "Uuid"
+      },
+      {
+        "ordinal": 1,
+        "name": "id!",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 2,
+        "name": "collection_id!",
+        "type_info": "Uuid"
+      },
+      {
+        "ordinal": 3,
+        "name": "stix_type!",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 4,
+        "name": "spec_version!",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 5,
+        "name": "date_added!",
+        "type_info": "Timestamp"
+      },
+      {
+        "ordinal": 6,
+        "name": "version!",
+        "type_info": "Timestamp"
+      },
+      {
+        "ordinal": 7,
+        "name": "serialized_data!",
+        "type_info": "Json"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Uuid",
+        "Varchar",
+        "Uuid",
+        "Varchar",
+        "Varchar",
+        "Timestamp",
+        "Timestamp",
+        "Json"
+      ]
+    },
+    "nullable": [
+      false,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true
+    ]
+  },
+  "hash": "fc70b335bef6d979bfd317b7a1c6957dc5bd9e7a4cf9de5b1c3625e6e4820f5f"
+}

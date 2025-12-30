@@ -1,0 +1,52 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "SELECT id, collection_id as \"collection_id!\", bindings, begin_time, end_time,\n                      date_created as \"date_created!\"\n               FROM result_sets WHERE id = $1",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "id",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 1,
+        "name": "collection_id!",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 2,
+        "name": "bindings",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 3,
+        "name": "begin_time",
+        "type_info": "Timestamptz"
+      },
+      {
+        "ordinal": 4,
+        "name": "end_time",
+        "type_info": "Timestamptz"
+      },
+      {
+        "ordinal": 5,
+        "name": "date_created!",
+        "type_info": "Timestamptz"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Text"
+      ]
+    },
+    "nullable": [
+      false,
+      true,
+      true,
+      true,
+      true,
+      true
+    ]
+  },
+  "hash": "30e2837598c8fcacfe1e8e9676e4da5572067b9118d152bcdf29eaf02d007d66"
+}

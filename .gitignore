@@ -1,0 +1,20 @@
+/target/
+/bin/
+
+
+# Configuration files (may contain sensitive data)
+taxii.toml
+*.secrets.toml
+/config.toml
+
+
+# Keep example files
+!*.example
+!*.toml.example
+!*.example.toml
+
+# Docker config (user-created)
+examples/docker/config/
+
+# mdbook build output
+docs/book/

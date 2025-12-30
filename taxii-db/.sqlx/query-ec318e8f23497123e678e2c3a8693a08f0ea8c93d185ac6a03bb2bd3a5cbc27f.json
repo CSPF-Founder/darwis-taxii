@@ -1,0 +1,15 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "DELETE FROM opentaxii_stixobject WHERE collection_id = $1 AND id = $2",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Uuid",
+        "Text"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "ec318e8f23497123e678e2c3a8693a08f0ea8c93d185ac6a03bb2bd3a5cbc27f"
+}

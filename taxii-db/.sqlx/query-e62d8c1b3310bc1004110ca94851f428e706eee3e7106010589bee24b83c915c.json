@@ -1,0 +1,44 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "SELECT id, username as \"username!\", password_hash as \"password_hash!\",\n                      is_admin as \"is_admin!\", _permissions as \"permissions_json!\"\n               FROM accounts",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "id",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 1,
+        "name": "username!",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 2,
+        "name": "password_hash!",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 3,
+        "name": "is_admin!",
+        "type_info": "Bool"
+      },
+      {
+        "ordinal": 4,
+        "name": "permissions_json!",
+        "type_info": "Text"
+      }
+    ],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": [
+      false,
+      true,
+      true,
+      true,
+      false
+    ]
+  },
+  "hash": "e62d8c1b3310bc1004110ca94851f428e706eee3e7106010589bee24b83c915c"
+}

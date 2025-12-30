@@ -1,0 +1,59 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "SELECT id, api_root_id as \"api_root_id!\", title as \"title!\", description, alias,\n                          is_public as \"is_public!\", is_public_write as \"is_public_write!\"\n                   FROM opentaxii_collection\n                   WHERE api_root_id = $1 AND alias = $2",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "id",
+        "type_info": "Uuid"
+      },
+      {
+        "ordinal": 1,
+        "name": "api_root_id!",
+        "type_info": "Uuid"
+      },
+      {
+        "ordinal": 2,
+        "name": "title!",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 3,
+        "name": "description",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 4,
+        "name": "alias",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 5,
+        "name": "is_public!",
+        "type_info": "Bool"
+      },
+      {
+        "ordinal": 6,
+        "name": "is_public_write!",
+        "type_info": "Bool"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Uuid",
+        "Text"
+      ]
+    },
+    "nullable": [
+      false,
+      true,
+      false,
+      true,
+      true,
+      false,
+      false
+    ]
+  },
+  "hash": "f6625d30b739156502c6aee2a6e8fc7c83584f74780bd8cce06eb68ec4061f4a"
+}

@@ -1,0 +1,28 @@
+[package]
+name = "taxii-auth"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+authors.workspace = true
+homepage.workspace = true
+description = "Authentication layer for TAXII server"
+publish = false
+
+[lints]
+workspace = true
+
+[dependencies]
+taxii-core.workspace = true
+taxii-db.workspace = true
+jsonwebtoken.workspace = true
+scrypt = "0.11"
+hex.workspace = true
+base64.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+thiserror.workspace = true
+tracing.workspace = true
+chrono.workspace = true
+rand = "0.9"
+subtle = "2.6"

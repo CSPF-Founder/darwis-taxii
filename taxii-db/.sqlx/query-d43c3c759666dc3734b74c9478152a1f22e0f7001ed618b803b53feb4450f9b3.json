@@ -1,0 +1,23 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "SELECT cb.id\n                   FROM content_blocks cb\n                   JOIN collection_to_content_block ctcb ON cb.id = ctcb.content_block_id\n                   WHERE ctcb.collection_id = $1 AND cb.timestamp_label > $2",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "id",
+        "type_info": "Int4"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Int4",
+        "Timestamptz"
+      ]
+    },
+    "nullable": [
+      false
+    ]
+  },
+  "hash": "d43c3c759666dc3734b74c9478152a1f22e0f7001ed618b803b53feb4450f9b3"
+}

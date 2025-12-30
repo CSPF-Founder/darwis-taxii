@@ -1,0 +1,23 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "SELECT EXISTS(\n                   SELECT 1 FROM opentaxii_stixobject\n                   WHERE id = $1 AND collection_id = $2\n               ) as \"exists!\"",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "exists!",
+        "type_info": "Bool"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Text",
+        "Uuid"
+      ]
+    },
+    "nullable": [
+      null
+    ]
+  },
+  "hash": "2518531a043829bb158a55c0c85e08ae8b44f977bc22726f28a6bbb98c4d4252"
+}

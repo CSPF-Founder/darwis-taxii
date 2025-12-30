@@ -1,0 +1,28 @@
+[package]
+name = "taxii-1x"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+authors.workspace = true
+homepage.workspace = true
+description = "TAXII 1.x XML protocol implementation"
+publish = false
+
+[lints]
+workspace = true
+
+[dependencies]
+taxii-core.workspace = true
+taxii-db.workspace = true
+quick-xml.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+uuid.workspace = true
+chrono.workspace = true
+thiserror.workspace = true
+tracing.workspace = true
+axum.workspace = true
+base64.workspace = true
+sqlx.workspace = true
+futures.workspace = true

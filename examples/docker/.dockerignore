@@ -1,0 +1,29 @@
+# Build artifacts
+target/
+
+# Git
+.git/
+.gitignore
+.github/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Documentation
+*.md
+!README.md
+docs/
+
+# Config files with secrets
+taxii.toml
+
+# Docker (avoid copying docker files into context)
+examples/docker/
+
+# Misc
+.env
+.env.*
+*.log

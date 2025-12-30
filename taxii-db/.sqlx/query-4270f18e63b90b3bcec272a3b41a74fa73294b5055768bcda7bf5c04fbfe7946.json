@@ -1,0 +1,64 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "INSERT INTO opentaxii_collection (id, api_root_id, title, description, alias, is_public, is_public_write)\n               VALUES ($1, $2, $3, $4, $5, $6, $7)\n               RETURNING id, api_root_id as \"api_root_id!\", title as \"title!\", description, alias,\n                         is_public as \"is_public!\", is_public_write as \"is_public_write!\"",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "id",
+        "type_info": "Uuid"
+      },
+      {
+        "ordinal": 1,
+        "name": "api_root_id!",
+        "type_info": "Uuid"
+      },
+      {
+        "ordinal": 2,
+        "name": "title!",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 3,
+        "name": "description",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 4,
+        "name": "alias",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 5,
+        "name": "is_public!",
+        "type_info": "Bool"
+      },
+      {
+        "ordinal": 6,
+        "name": "is_public_write!",
+        "type_info": "Bool"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Uuid",
+        "Uuid",
+        "Varchar",
+        "Text",
+        "Varchar",
+        "Bool",
+        "Bool"
+      ]
+    },
+    "nullable": [
+      false,
+      true,
+      false,
+      true,
+      true,
+      false,
+      false
+    ]
+  },
+  "hash": "4270f18e63b90b3bcec272a3b41a74fa73294b5055768bcda7bf5c04fbfe7946"
+}

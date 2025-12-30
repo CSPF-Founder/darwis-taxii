@@ -1,0 +1,52 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "SELECT id, collection_id as \"collection_id!\", params, status as \"status!\",\n                      service_id as \"service_id!\", date_created as \"date_created!\"\n               FROM subscriptions WHERE id = $1",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "id",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 1,
+        "name": "collection_id!",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 2,
+        "name": "params",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 3,
+        "name": "status!",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 4,
+        "name": "service_id!",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 5,
+        "name": "date_created!",
+        "type_info": "Timestamptz"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Text"
+      ]
+    },
+    "nullable": [
+      false,
+      true,
+      true,
+      true,
+      true,
+      true
+    ]
+  },
+  "hash": "ee2c7943ce547611401b83d4604fed43646cba2c66bc7e4ef7b7a19291dd7d30"
+}

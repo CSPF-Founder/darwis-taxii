@@ -1,0 +1,46 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "SELECT s.id, s.type as \"service_type!\", s._properties as \"properties_json\",\n                      s.date_updated, s.date_created as \"date_created!\"\n               FROM services s\n               JOIN service_to_collection stc ON s.id = stc.service_id\n               WHERE stc.collection_id = $1",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "id",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 1,
+        "name": "service_type!",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 2,
+        "name": "properties_json",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 3,
+        "name": "date_updated",
+        "type_info": "Timestamptz"
+      },
+      {
+        "ordinal": 4,
+        "name": "date_created!",
+        "type_info": "Timestamptz"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Int4"
+      ]
+    },
+    "nullable": [
+      false,
+      true,
+      false,
+      true,
+      true
+    ]
+  },
+  "hash": "044a9e622adeab636865624cb953a6bcd99327622fb9eaaf2a18ab3cd8bbf099"
+}

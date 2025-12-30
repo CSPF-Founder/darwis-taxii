@@ -1,0 +1,27 @@
+# DARWIS TAXII - Accounts Only (Template)
+# ========================================
+#
+# Use this for TAXII 2.x when API roots and collections are created via CLI.
+# For TAXII 1.x (services + collections), see full.yaml instead.
+#
+# Setup:
+#   1. cp examples/data-config/accounts.yaml data-config.yaml
+#   2. taxii-cli api-root add --title "My Root" --default
+#   3. taxii-cli collection add --api-root-id <uuid> --title "My Collection"
+#   4. taxii-cli collection list --api-root-id <uuid>  # Get collection UUID
+#   5. Edit data-config.yaml - replace example UUID with your collection UUID
+#   6. taxii-cli sync data-config.yaml
+
+accounts:
+  # Admin - full access to all collections
+  - username: admin
+    password: adminpass
+    is_admin: true
+
+  # Regular user with collection permissions
+  - username: myuser
+    password: mypass
+    is_admin: false
+    permissions:
+      # Replace with your collection UUID from step 3
+      86c1741e-7e95-4b17-8940-a8f83eb5fe32: [read, write]

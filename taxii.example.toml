@@ -1,0 +1,40 @@
+# TAXII Server Configuration
+#
+# All settings can be overridden via environment variables with the
+# DARWIS_TAXII_ prefix. For example:
+#   - DARWIS_TAXII_BIND_ADDRESS overrides bind_address
+#   - DARWIS_TAXII_DB_CONNECTION overrides [database].url
+#   - DARWIS_TAXII_AUTH_SECRET overrides [auth].secret
+
+bind_address = "0.0.0.0"
+port = 9000
+domain = "localhost:9000"
+support_basic_auth = true
+return_server_error_details = false
+
+[database]
+url = "postgresql://dbuser:dbpassword@localhost:5432/opentaxii"
+
+[auth]
+secret = "change-me-in-production"
+token_ttl_secs = 3600
+
+[taxii1]
+save_raw_inbox_messages = true
+xml_parser_supports_huge_tree = true
+count_blocks_in_poll_responses = false
+unauthorized_status = "UNAUTHORIZED"
+
+[taxii2]
+title = "TAXII Server"
+description = "DARWIS TAXII 2.1 Server"
+contact = "security@example.com"
+max_content_length = 104857600
+public_discovery = true
+allow_custom_properties = true
+
+# Pagination limits for TAXII 2.x pull requests
+# default_pagination_limit: Used when client doesn't specify a limit
+# max_pagination_limit: Hard cap on objects returned per request
+default_pagination_limit = 1000
+max_pagination_limit = 1000

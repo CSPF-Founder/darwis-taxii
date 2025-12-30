@@ -1,0 +1,14 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "DELETE FROM service_to_collection WHERE collection_id = $1",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Int4"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "4750cfc48e02716c108d2a47935b479d3141a4e25acb7d445fa3ef4b0f505df6"
+}

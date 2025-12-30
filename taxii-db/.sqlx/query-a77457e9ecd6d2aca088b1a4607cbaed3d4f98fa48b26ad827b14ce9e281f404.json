@@ -1,0 +1,14 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "UPDATE opentaxii_api_root SET \"default\" = false WHERE id != $1",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Uuid"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "a77457e9ecd6d2aca088b1a4607cbaed3d4f98fa48b26ad827b14ce9e281f404"
+}

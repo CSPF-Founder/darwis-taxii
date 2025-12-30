@@ -1,0 +1,44 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "SELECT id, type as \"service_type!\", _properties as \"properties_json\",\n                      date_updated, date_created as \"date_created!\"\n               FROM services",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "id",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 1,
+        "name": "service_type!",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 2,
+        "name": "properties_json",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 3,
+        "name": "date_updated",
+        "type_info": "Timestamptz"
+      },
+      {
+        "ordinal": 4,
+        "name": "date_created!",
+        "type_info": "Timestamptz"
+      }
+    ],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": [
+      false,
+      true,
+      false,
+      true,
+      true
+    ]
+  },
+  "hash": "d0d8a7429833157c9f20723efda60594ddedc91146fc3dac60934572eb37db83"
+}

@@ -1,0 +1,14 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "DELETE FROM opentaxii_api_root WHERE id = $1",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Uuid"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "cebc784e2a73f1335af6b03d076bb13add6932a7a21f591aa4c2ddfa0d8e1498"
+}

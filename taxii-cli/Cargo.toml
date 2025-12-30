@@ -1,0 +1,42 @@
+[package]
+name = "taxii-cli"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+authors.workspace = true
+homepage.workspace = true
+description = "Command-line interface for TAXII server management"
+publish = false
+
+[lints]
+workspace = true
+
+[[bin]]
+name = "taxii-cli"
+path = "src/main.rs"
+
+[dependencies]
+# Local crates
+taxii-core.workspace = true
+taxii-db.workspace = true
+taxii-auth.workspace = true
+
+# CLI
+clap = { version = "4", features = ["derive", "env", "color"] }
+serde_yaml.workspace = true
+
+# Async runtime
+tokio = { workspace = true, features = ["rt-multi-thread", "macros"] }
+
+# Serialization
+serde.workspace = true
+serde_json.workspace = true
+toml.workspace = true
+
+# Other
+chrono.workspace = true
+thiserror.workspace = true
+tracing.workspace = true
+tracing-subscriber.workspace = true
+uuid.workspace = true

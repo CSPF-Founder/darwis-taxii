@@ -1,0 +1,100 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "SELECT id, message_id as \"message_id!\", result_id, record_count,\n                      partial_count as \"partial_count!\", subscription_collection_name, subscription_id,\n                      exclusive_begin_timestamp_label, inclusive_end_timestamp_label,\n                      original_message, content_block_count as \"content_block_count!\",\n                      destination_collections, service_id as \"service_id!\", date_created as \"date_created!\"\n               FROM inbox_messages WHERE id = $1",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "id",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 1,
+        "name": "message_id!",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 2,
+        "name": "result_id",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 3,
+        "name": "record_count",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 4,
+        "name": "partial_count!",
+        "type_info": "Bool"
+      },
+      {
+        "ordinal": 5,
+        "name": "subscription_collection_name",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 6,
+        "name": "subscription_id",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 7,
+        "name": "exclusive_begin_timestamp_label",
+        "type_info": "Timestamptz"
+      },
+      {
+        "ordinal": 8,
+        "name": "inclusive_end_timestamp_label",
+        "type_info": "Timestamptz"
+      },
+      {
+        "ordinal": 9,
+        "name": "original_message",
+        "type_info": "Bytea"
+      },
+      {
+        "ordinal": 10,
+        "name": "content_block_count!",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 11,
+        "name": "destination_collections",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 12,
+        "name": "service_id!",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 13,
+        "name": "date_created!",
+        "type_info": "Timestamptz"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Int4"
+      ]
+    },
+    "nullable": [
+      false,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      false,
+      true,
+      true,
+      true,
+      true
+    ]
+  },
+  "hash": "0f4a347e80087c9c7e994e7995f77fc320286c27a5125a78d5cfa3adca5f0839"
+}

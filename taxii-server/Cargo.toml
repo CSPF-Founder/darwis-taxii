@@ -1,0 +1,41 @@
+[package]
+name = "taxii-server"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+authors.workspace = true
+homepage.workspace = true
+description = "HTTP server with Axum for TAXII"
+publish = false
+
+[lints]
+workspace = true
+
+[[bin]]
+name = "taxii-server"
+path = "src/main.rs"
+
+[dependencies]
+taxii-core.workspace = true
+taxii-db.workspace = true
+taxii-auth.workspace = true
+taxii-1x.workspace = true
+taxii-2x.workspace = true
+axum.workspace = true
+tower.workspace = true
+tower-http.workspace = true
+tokio.workspace = true
+futures.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+toml.workspace = true
+thiserror.workspace = true
+tracing.workspace = true
+tracing-subscriber.workspace = true
+tracing-appender.workspace = true
+base64.workspace = true
+uuid.workspace = true
+
+[dev-dependencies]
+tokio = { workspace = true, features = ["rt-multi-thread", "macros"] }

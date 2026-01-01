@@ -35,9 +35,6 @@ jobs:
           # Linux aarch64 gnu - use cross-rs on ubuntu (cross uses glibc ~2.19, compatible with Debian Bookworm 2.36)
           - target: aarch64-unknown-linux-gnu
             os: ubuntu-latest
-          # Linux musl target - static binary for non-Docker use
-          - target: x86_64-unknown-linux-musl
-            os: ubuntu-latest
           # macOS targets
           - target: x86_64-apple-darwin
             os: macos-latest

@@ -31,9 +31,15 @@ pub enum ActivityAction {
 }
 
 /// Handle activity commands.
-pub async fn handle(pool: TaxiiPool, action: ActivityAction) -> Result<(), Box<dyn std::error::Error>> {
+pub async fn handle(
+    pool: TaxiiPool,
+    action: ActivityAction,
+) -> Result<(), Box<dyn std::error::Error>> {
     match action {
-        ActivityAction::Usage { inactive_days, unused } => {
+        ActivityAction::Usage {
+            inactive_days,
+            unused,
+        } => {
             if unused {
                 show_unused_accounts(&pool).await?;
             } else if let Some(days) = inactive_days {
@@ -42,7 +48,10 @@ pub async fn handle(pool: TaxiiPool, action: ActivityAction) -> Result<(), Box<d
                 show_usage_summary(&pool).await?;
             }
         }
-        ActivityAction::Cleanup { retention_days, confirm } => {
+        ActivityAction::Cleanup {
+            retention_days,
+            confirm,
+        } => {
             cleanup_old_records(&pool, retention_days, confirm).await?;
         }
     }

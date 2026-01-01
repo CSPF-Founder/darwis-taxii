@@ -40,7 +40,7 @@ Server starts at `http://localhost:9000`.
 
 ## Docker
 
-Docker files are in `examples/docker/`:
+Docker image: `cysecurity/darwis-taxii`
 
 ```bash
 cd examples/docker
@@ -61,11 +61,7 @@ docker compose exec taxii-server ./taxii-cli sync /app/config/data-config.yaml
 docker compose exec taxii-server ./taxii-cli account list
 ```
 
-Build image only:
-
-```bash
-docker build -f examples/docker/Dockerfile -t darwis-taxii .
-```
+To build locally instead of pulling from Docker Hub, edit `docker-compose.yml` and uncomment the `build` section.
 
 ## Configuration
 

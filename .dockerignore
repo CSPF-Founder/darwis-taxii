@@ -1,15 +1,33 @@
 # Build artifacts
 target/
 
-# Docker volumes
-examples/docker/volumes/
+# Git
+.git/
+.gitignore
+.github/
 
 # IDE
 .idea/
 .vscode/
+.claude/
+*.swp
+*.swo
 
-# Git
-.git/
+# Documentation
+*.md
+docs/
+
+# Config files with secrets
+taxii.toml
+.env
+.env.*
+
+# Docker examples (avoid copying into context)
+examples/docker/volumes/
+bin/
+
+# SQLx offline data is needed for build
+# !.sqlx/
 
 # Misc
 *.log

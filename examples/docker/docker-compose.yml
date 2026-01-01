@@ -13,9 +13,12 @@ services:
       - taxiinet
 
   taxii-server:
-    build:
-      context: ../..
-      dockerfile: examples/docker/Dockerfile
+    # Use published image from Docker Hub
+    image: cysecurity/darwis-taxii:latest
+    # Or build locally (uncomment below, comment image above):
+    # build:
+    #   context: ../..
+    #   dockerfile: Dockerfile
     # container_name: taxii-server
     depends_on:
       - db

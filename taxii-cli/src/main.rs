@@ -153,16 +153,16 @@ impl ResolvedConfig {
                 Ok(content) => match toml::from_str(&content) {
                     Ok(config) => {
                         if cli.verbose {
-                            eprintln!("Loaded config from: {}", path);
+                            eprintln!("Loaded config from: {path}");
                         }
                         config
                     }
                     Err(e) => {
-                        return Err(format!("Failed to parse TOML config: {}", e));
+                        return Err(format!("Failed to parse TOML config: {e}"));
                     }
                 },
                 Err(e) => {
-                    return Err(format!("Failed to read config file: {}", e));
+                    return Err(format!("Failed to read config file: {e}"));
                 }
             },
             _ => TomlConfig::default(),
@@ -172,7 +172,7 @@ impl ResolvedConfig {
         let database_url = cli
             .database_url
             .clone()
-            .or_else(|| env::var(format!("{}DB_CONNECTION", ENV_PREFIX)).ok())
+            .or_else(|| env::var(format!("{ENV_PREFIX}DB_CONNECTION")).ok())
             .or(toml_config.database.url)
             .ok_or_else(|| {
                 "Database URL required. Provide via --database-url, DARWIS_TAXII_DB_CONNECTION env, or database.url in taxii.toml".to_string()
@@ -182,7 +182,7 @@ impl ResolvedConfig {
         let auth_secret = cli
             .auth_secret
             .clone()
-            .or_else(|| env::var(format!("{}AUTH_SECRET", ENV_PREFIX)).ok())
+            .or_else(|| env::var(format!("{ENV_PREFIX}AUTH_SECRET")).ok())
             .or(toml_config.auth.secret)
             .ok_or_else(|| {
                 "Auth secret required. Provide via --auth-secret, DARWIS_TAXII_AUTH_SECRET env, or auth.secret in taxii.toml".to_string()

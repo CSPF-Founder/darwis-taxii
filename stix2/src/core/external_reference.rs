@@ -74,7 +74,7 @@ impl ExternalReference {
         let cve_id = cve_id.into();
         Self::new("cve")
             .with_external_id(&cve_id)
-            .with_url(format!("https://nvd.nist.gov/vuln/detail/{}", cve_id))
+            .with_url(format!("https://nvd.nist.gov/vuln/detail/{cve_id}"))
     }
 
     /// Create a MITRE ATT&CK reference.
@@ -104,8 +104,7 @@ impl ExternalReference {
         Self::new("capec")
             .with_external_id(&capec_id)
             .with_url(format!(
-                "https://capec.mitre.org/data/definitions/{}.html",
-                id_num
+                "https://capec.mitre.org/data/definitions/{id_num}.html"
             ))
     }
 

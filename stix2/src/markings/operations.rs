@@ -136,7 +136,7 @@ pub fn get_granular_markings<'a>(
 
                     // Inherited: parent selector matches (e.g., "description" matches "description.text")
                     if inherited
-                        && selector.starts_with(&format!("{}.", gm_selector))
+                        && selector.starts_with(&format!("{gm_selector}."))
                         && !result.contains(&marking_ref)
                     {
                         result.push(marking_ref);
@@ -145,7 +145,7 @@ pub fn get_granular_markings<'a>(
 
                     // Descendants: child selector matches (e.g., "description.text" when checking "description")
                     if descendants
-                        && gm_selector.starts_with(&format!("{}.", selector))
+                        && gm_selector.starts_with(&format!("{selector}."))
                         && !result.contains(&marking_ref)
                     {
                         result.push(marking_ref);
@@ -332,8 +332,8 @@ pub fn compress_markings(markings: Vec<GranularMarking>) -> Vec<GranularMarking>
 
     for gm in markings {
         let key = match (&gm.marking_ref, &gm.lang) {
-            (Some(m), _) => format!("ref:{}", m),
-            (_, Some(l)) => format!("lang:{}", l),
+            (Some(m), _) => format!("ref:{m}"),
+            (_, Some(l)) => format!("lang:{l}"),
             _ => continue,
         };
 
@@ -377,10 +377,10 @@ pub fn validate_selector(obj: &Value, selector: &str) -> Result<()> {
             // Navigate to index
             let idx: usize = idx_str
                 .parse()
-                .map_err(|_| Error::InvalidSelector(format!("Invalid array index: {}", idx_str)))?;
+                .map_err(|_| Error::InvalidSelector(format!("Invalid array index: {idx_str}")))?;
 
             current = current.get(idx).ok_or_else(|| {
-                Error::InvalidSelector(format!("Array index {} out of bounds", idx))
+                Error::InvalidSelector(format!("Array index {idx} out of bounds"))
             })?;
         } else {
             current = current.get(*part).ok_or_else(|| {
@@ -410,7 +410,7 @@ fn iter_path_recursive<'a>(obj: &'a Value, path: String, result: &mut Vec<(Strin
                 let new_path = if path.is_empty() {
                     key.clone()
                 } else {
-                    format!("{}.{}", path, key)
+                    format!("{path}.{key}")
                 };
                 result.push((new_path.clone(), value));
                 iter_path_recursive(value, new_path, result);
@@ -418,7 +418,7 @@ fn iter_path_recursive<'a>(obj: &'a Value, path: String, result: &mut Vec<(Strin
         }
         Value::Array(arr) => {
             for (i, value) in arr.iter().enumerate() {
-                let new_path = format!("{}[{}]", path, i);
+                let new_path = format!("{path}[{i}]");
                 result.push((new_path.clone(), value));
                 iter_path_recursive(value, new_path, result);
             }

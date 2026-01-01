@@ -162,8 +162,7 @@ impl Identifier {
     fn validate_type(object_type: &str) -> Result<()> {
         if !TYPE_REGEX.is_match(object_type) {
             return Err(Error::InvalidType(format!(
-                "'{}' is not a valid STIX type. Types must be lowercase alphanumeric with hyphens.",
-                object_type
+                "'{object_type}' is not a valid STIX type. Types must be lowercase alphanumeric with hyphens."
             )));
         }
 
@@ -190,8 +189,7 @@ impl FromStr for Identifier {
         let parts: Vec<&str> = s.splitn(2, "--").collect();
         if parts.len() != 2 {
             return Err(Error::InvalidId(format!(
-                "'{}' does not match the STIX identifier format '<type>--<uuid>'",
-                s
+                "'{s}' does not match the STIX identifier format '<type>--<uuid>'"
             )));
         }
 
@@ -201,7 +199,7 @@ impl FromStr for Identifier {
         Self::validate_type(object_type)?;
 
         let uuid = Uuid::parse_str(uuid_str)
-            .map_err(|e| Error::InvalidId(format!("Invalid UUID in identifier '{}': {}", s, e)))?;
+            .map_err(|e| Error::InvalidId(format!("Invalid UUID in identifier '{s}': {e}")))?;
 
         Ok(Self {
             object_type: object_type.to_lowercase(),

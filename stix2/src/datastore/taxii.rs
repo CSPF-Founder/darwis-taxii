@@ -195,7 +195,7 @@ impl TaxiiClient {
     pub fn new(server_url: impl Into<String>) -> Result<Self> {
         let client = Client::builder()
             .build()
-            .map_err(|e| Error::Custom(format!("Failed to create HTTP client: {}", e)))?;
+            .map_err(|e| Error::Custom(format!("Failed to create HTTP client: {e}")))?;
 
         Ok(Self {
             client,
@@ -237,7 +237,7 @@ impl TaxiiClient {
             .build_request(reqwest::Method::GET, &url)
             .send()
             .await
-            .map_err(|e| Error::Custom(format!("Discovery request failed: {}", e)))?;
+            .map_err(|e| Error::Custom(format!("Discovery request failed: {e}")))?;
 
         if !response.status().is_success() {
             return Err(Error::Custom(format!(
@@ -249,7 +249,7 @@ impl TaxiiClient {
         response
             .json()
             .await
-            .map_err(|e| Error::Custom(format!("Failed to parse discovery response: {}", e)))
+            .map_err(|e| Error::Custom(format!("Failed to parse discovery response: {e}")))
     }
 
     /// Get API root information
@@ -259,7 +259,7 @@ impl TaxiiClient {
             .build_request(reqwest::Method::GET, &url)
             .send()
             .await
-            .map_err(|e| Error::Custom(format!("API root request failed: {}", e)))?;
+            .map_err(|e| Error::Custom(format!("API root request failed: {e}")))?;
 
         if !response.status().is_success() {
             return Err(Error::Custom(format!(
@@ -271,7 +271,7 @@ impl TaxiiClient {
         response
             .json()
             .await
-            .map_err(|e| Error::Custom(format!("Failed to parse API root response: {}", e)))
+            .map_err(|e| Error::Custom(format!("Failed to parse API root response: {e}")))
     }
 
     /// Get collections for an API root
@@ -285,7 +285,7 @@ impl TaxiiClient {
             .build_request(reqwest::Method::GET, &url)
             .send()
             .await
-            .map_err(|e| Error::Custom(format!("Collections request failed: {}", e)))?;
+            .map_err(|e| Error::Custom(format!("Collections request failed: {e}")))?;
 
         if !response.status().is_success() {
             return Err(Error::Custom(format!(
@@ -297,7 +297,7 @@ impl TaxiiClient {
         response
             .json()
             .await
-            .map_err(|e| Error::Custom(format!("Failed to parse collections response: {}", e)))
+            .map_err(|e| Error::Custom(format!("Failed to parse collections response: {e}")))
     }
 
     /// Get a specific collection
@@ -312,7 +312,7 @@ impl TaxiiClient {
             .build_request(reqwest::Method::GET, &url)
             .send()
             .await
-            .map_err(|e| Error::Custom(format!("Collection request failed: {}", e)))?;
+            .map_err(|e| Error::Custom(format!("Collection request failed: {e}")))?;
 
         if !response.status().is_success() {
             return Err(Error::Custom(format!(
@@ -324,7 +324,7 @@ impl TaxiiClient {
         response
             .json()
             .await
-            .map_err(|e| Error::Custom(format!("Failed to parse collection response: {}", e)))
+            .map_err(|e| Error::Custom(format!("Failed to parse collection response: {e}")))
     }
 
     /// Get objects from a collection
@@ -344,7 +344,7 @@ impl TaxiiClient {
         if let Some(p) = params {
             let query = p.to_query_string();
             if !query.is_empty() {
-                url = format!("{}?{}", url, query);
+                url = format!("{url}?{query}");
             }
         }
 
@@ -354,7 +354,7 @@ impl TaxiiClient {
         let response = req
             .send()
             .await
-            .map_err(|e| Error::Custom(format!("Get objects request failed: {}", e)))?;
+            .map_err(|e| Error::Custom(format!("Get objects request failed: {e}")))?;
 
         if response.status() == StatusCode::NOT_FOUND {
             return Ok(Envelope {
@@ -374,7 +374,7 @@ impl TaxiiClient {
         response
             .json()
             .await
-            .map_err(|e| Error::Custom(format!("Failed to parse objects response: {}", e)))
+            .map_err(|e| Error::Custom(format!("Failed to parse objects response: {e}")))
     }
 
     /// Get a specific object by ID
@@ -398,7 +398,7 @@ impl TaxiiClient {
         let response = req
             .send()
             .await
-            .map_err(|e| Error::Custom(format!("Get object request failed: {}", e)))?;
+            .map_err(|e| Error::Custom(format!("Get object request failed: {e}")))?;
 
         if response.status() == StatusCode::NOT_FOUND {
             return Ok(Envelope {
@@ -418,7 +418,7 @@ impl TaxiiClient {
         response
             .json()
             .await
-            .map_err(|e| Error::Custom(format!("Failed to parse object response: {}", e)))
+            .map_err(|e| Error::Custom(format!("Failed to parse object response: {e}")))
     }
 
     /// Add objects to a collection
@@ -445,7 +445,7 @@ impl TaxiiClient {
         let response = req
             .send()
             .await
-            .map_err(|e| Error::Custom(format!("Add objects request failed: {}", e)))?;
+            .map_err(|e| Error::Custom(format!("Add objects request failed: {e}")))?;
 
         if !response.status().is_success() {
             return Err(Error::Custom(format!(
@@ -457,7 +457,7 @@ impl TaxiiClient {
         response
             .json()
             .await
-            .map_err(|e| Error::Custom(format!("Failed to parse status response: {}", e)))
+            .map_err(|e| Error::Custom(format!("Failed to parse status response: {e}")))
     }
 
     /// Get the manifest of a collection
@@ -477,7 +477,7 @@ impl TaxiiClient {
         if let Some(p) = params {
             let query = p.to_query_string();
             if !query.is_empty() {
-                url = format!("{}?{}", url, query);
+                url = format!("{url}?{query}");
             }
         }
 
@@ -485,7 +485,7 @@ impl TaxiiClient {
             .build_request(reqwest::Method::GET, &url)
             .send()
             .await
-            .map_err(|e| Error::Custom(format!("Manifest request failed: {}", e)))?;
+            .map_err(|e| Error::Custom(format!("Manifest request failed: {e}")))?;
 
         if !response.status().is_success() {
             return Err(Error::Custom(format!(
@@ -497,7 +497,7 @@ impl TaxiiClient {
         response
             .json()
             .await
-            .map_err(|e| Error::Custom(format!("Failed to parse manifest response: {}", e)))
+            .map_err(|e| Error::Custom(format!("Failed to parse manifest response: {e}")))
     }
 
     /// Delete an object from a collection
@@ -519,7 +519,7 @@ impl TaxiiClient {
             .build_request(reqwest::Method::DELETE, &url)
             .send()
             .await
-            .map_err(|e| Error::Custom(format!("Delete object request failed: {}", e)))?;
+            .map_err(|e| Error::Custom(format!("Delete object request failed: {e}")))?;
 
         if !response.status().is_success() && response.status() != StatusCode::NOT_FOUND {
             return Err(Error::Custom(format!(
@@ -544,7 +544,7 @@ impl TaxiiClient {
             .build_request(reqwest::Method::GET, &url)
             .send()
             .await
-            .map_err(|e| Error::Custom(format!("Status request failed: {}", e)))?;
+            .map_err(|e| Error::Custom(format!("Status request failed: {e}")))?;
 
         if !response.status().is_success() {
             return Err(Error::Custom(format!(
@@ -556,7 +556,7 @@ impl TaxiiClient {
         response
             .json()
             .await
-            .map_err(|e| Error::Custom(format!("Failed to parse status response: {}", e)))
+            .map_err(|e| Error::Custom(format!("Failed to parse status response: {e}")))
     }
 }
 
@@ -624,22 +624,22 @@ impl ObjectsParams {
         let mut params = Vec::new();
 
         if let Some(ref v) = self.added_after {
-            params.push(format!("added_after={}", v));
+            params.push(format!("added_after={v}"));
         }
         if let Some(ref v) = self.id {
-            params.push(format!("match[id]={}", v));
+            params.push(format!("match[id]={v}"));
         }
         if let Some(ref v) = self.type_ {
-            params.push(format!("match[type]={}", v));
+            params.push(format!("match[type]={v}"));
         }
         if let Some(ref v) = self.version {
-            params.push(format!("match[version]={}", v));
+            params.push(format!("match[version]={v}"));
         }
         if let Some(v) = self.limit {
-            params.push(format!("limit={}", v));
+            params.push(format!("limit={v}"));
         }
         if let Some(ref v) = self.next {
-            params.push(format!("next={}", v));
+            params.push(format!("next={v}"));
         }
 
         params.join("&")
@@ -723,7 +723,7 @@ impl TaxiiCollectionStore {
         }
 
         let obj: StixObject = serde_json::from_value(envelope.objects[0].clone())
-            .map_err(|e| Error::Custom(format!("Failed to parse STIX object: {}", e)))?;
+            .map_err(|e| Error::Custom(format!("Failed to parse STIX object: {e}")))?;
 
         Ok(Some(obj))
     }
@@ -749,7 +749,7 @@ impl TaxiiCollectionStore {
 
             for obj_value in envelope.objects {
                 let obj: StixObject = serde_json::from_value(obj_value)
-                    .map_err(|e| Error::Custom(format!("Failed to parse STIX object: {}", e)))?;
+                    .map_err(|e| Error::Custom(format!("Failed to parse STIX object: {e}")))?;
                 all_objects.push(obj);
             }
 
@@ -800,7 +800,7 @@ impl TaxiiCollectionStore {
 
             for obj_value in envelope.objects {
                 let obj: StixObject = serde_json::from_value(obj_value)
-                    .map_err(|e| Error::Custom(format!("Failed to parse STIX object: {}", e)))?;
+                    .map_err(|e| Error::Custom(format!("Failed to parse STIX object: {e}")))?;
 
                 // Apply local filters that TAXII doesn't support
                 if self.matches_filters(&obj, filters) {

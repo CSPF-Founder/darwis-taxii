@@ -18,40 +18,40 @@ impl PatternBuilder {
     /// Add an IPv4 address comparison.
     pub fn ipv4_addr(mut self, value: &str) -> Self {
         self.expressions
-            .push(format!("[ipv4-addr:value = '{}']", value));
+            .push(format!("[ipv4-addr:value = '{value}']"));
         self
     }
 
     /// Add an IPv6 address comparison.
     pub fn ipv6_addr(mut self, value: &str) -> Self {
         self.expressions
-            .push(format!("[ipv6-addr:value = '{}']", value));
+            .push(format!("[ipv6-addr:value = '{value}']"));
         self
     }
 
     /// Add a domain name comparison.
     pub fn domain_name(mut self, value: &str) -> Self {
         self.expressions
-            .push(format!("[domain-name:value = '{}']", value));
+            .push(format!("[domain-name:value = '{value}']"));
         self
     }
 
     /// Add a URL comparison.
     pub fn url(mut self, value: &str) -> Self {
-        self.expressions.push(format!("[url:value = '{}']", value));
+        self.expressions.push(format!("[url:value = '{value}']"));
         self
     }
 
     /// Add a file hash comparison.
     pub fn file_hash(mut self, algorithm: &str, value: &str) -> Self {
         self.expressions
-            .push(format!("[file:hashes.'{}' = '{}']", algorithm, value));
+            .push(format!("[file:hashes.'{algorithm}' = '{value}']"));
         self
     }
 
     /// Add a file name comparison.
     pub fn file_name(mut self, value: &str) -> Self {
-        self.expressions.push(format!("[file:name = '{}']", value));
+        self.expressions.push(format!("[file:name = '{value}']"));
         self
     }
 
@@ -64,8 +64,7 @@ impl PatternBuilder {
         value: &str,
     ) -> Self {
         self.expressions.push(format!(
-            "[{}:{} {} '{}']",
-            object_type, object_path, operator, value
+            "[{object_type}:{object_path} {operator} '{value}']"
         ));
         self
     }
@@ -110,7 +109,7 @@ pub mod patterns {
     pub fn ip_addresses(ips: &[&str]) -> Pattern {
         let exprs: Vec<String> = ips
             .iter()
-            .map(|ip| format!("[ipv4-addr:value = '{}']", ip))
+            .map(|ip| format!("[ipv4-addr:value = '{ip}']"))
             .collect();
         Pattern::new(exprs.join(" OR "))
     }
@@ -119,7 +118,7 @@ pub mod patterns {
     pub fn domains(domains: &[&str]) -> Pattern {
         let exprs: Vec<String> = domains
             .iter()
-            .map(|d| format!("[domain-name:value = '{}']", d))
+            .map(|d| format!("[domain-name:value = '{d}']"))
             .collect();
         Pattern::new(exprs.join(" OR "))
     }
@@ -128,7 +127,7 @@ pub mod patterns {
     pub fn file_hashes(algorithm: &str, hashes: &[&str]) -> Pattern {
         let exprs: Vec<String> = hashes
             .iter()
-            .map(|h| format!("[file:hashes.'{}' = '{}']", algorithm, h))
+            .map(|h| format!("[file:hashes.'{algorithm}' = '{h}']"))
             .collect();
         Pattern::new(exprs.join(" OR "))
     }
@@ -136,15 +135,14 @@ pub mod patterns {
     /// Create a pattern for network traffic to/from an IP.
     pub fn network_traffic_ip(ip: &str) -> Pattern {
         Pattern::new(format!(
-            "[network-traffic:src_ref.type = 'ipv4-addr' AND network-traffic:src_ref.value = '{}'] OR \
-             [network-traffic:dst_ref.type = 'ipv4-addr' AND network-traffic:dst_ref.value = '{}']",
-            ip, ip
+            "[network-traffic:src_ref.type = 'ipv4-addr' AND network-traffic:src_ref.value = '{ip}'] OR \
+             [network-traffic:dst_ref.type = 'ipv4-addr' AND network-traffic:dst_ref.value = '{ip}']"
         ))
     }
 
     /// Create a pattern for a process with command line matching.
     pub fn process_command_line(pattern: &str) -> Pattern {
-        Pattern::new(format!("[process:command_line MATCHES '{}']", pattern))
+        Pattern::new(format!("[process:command_line MATCHES '{pattern}']"))
     }
 }
 

@@ -41,7 +41,7 @@ pub async fn handle(
 /// Delete an account.
 async fn delete_account(auth: &AuthAPI, username: &str) -> Result<(), Box<dyn std::error::Error>> {
     auth.delete_account(username).await?;
-    println!("Account '{}' deleted successfully", username);
+    println!("Account '{username}' deleted successfully");
     Ok(())
 }
 
@@ -69,7 +69,7 @@ async fn list_accounts(auth: &AuthAPI) -> Result<(), Box<dyn std::error::Error>>
                         taxii_core::PermissionValue::Taxii1(s) => s.clone(),
                         taxii_core::PermissionValue::Taxii2(list) => list.join("+"),
                     };
-                    format!("{}:{}", col, perm_str)
+                    format!("{col}:{perm_str}")
                 })
                 .collect::<Vec<_>>()
                 .join(", ")

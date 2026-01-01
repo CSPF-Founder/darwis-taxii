@@ -149,8 +149,7 @@ pub fn get_http_headers(
     }
 
     Err(Taxii1xError::InvalidRequest(format!(
-        "Unknown combination: version={}, is_secure={}",
-        version, is_secure
+        "Unknown combination: version={version}, is_secure={is_secure}"
     )))
 }
 
@@ -164,7 +163,7 @@ pub fn validate_request_headers_post_parse(
     for h in REQUIRED_REQUEST_HEADERS {
         if !headers.contains_key(*h) {
             return Err(Taxii1xError::failure(
-                format!("Header {} was not specified", h),
+                format!("Header {h} was not specified"),
                 None,
             ));
         }
@@ -180,7 +179,7 @@ pub fn validate_request_headers_post_parse(
     // Validate the X-TAXII-Services header
     if !service_bindings.contains(&taxii_services.as_str()) {
         return Err(Taxii1xError::failure(
-            format!("The value of {} was not recognized", HTTP_X_TAXII_SERVICES),
+            format!("The value of {HTTP_X_TAXII_SERVICES} was not recognized"),
             None,
         ));
     }
@@ -216,7 +215,7 @@ pub fn validate_request_headers(
     for h in BASIC_REQUEST_HEADERS {
         if !headers.contains_key(*h) {
             return Err(Taxii1xError::failure(
-                format!("Header {} was not specified", h),
+                format!("Header {h} was not specified"),
                 None,
             ));
         }
@@ -228,7 +227,7 @@ pub fn validate_request_headers(
 
     if !supported_message_bindings.contains(&content_type.as_str()) {
         return Err(Taxii1xError::failure(
-            format!("TAXII Content Type \"{}\" is not supported", content_type),
+            format!("TAXII Content Type \"{content_type}\" is not supported"),
             None,
         ));
     }
@@ -252,8 +251,7 @@ pub fn validate_response_headers(headers: &HashMap<String, String>) -> Taxii1xRe
     for h in REQUIRED_RESPONSE_HEADERS {
         if !headers.contains_key(*h) {
             return Err(Taxii1xError::InvalidRequest(format!(
-                "Required response header not specified: {}",
-                h
+                "Required response header not specified: {h}"
             )));
         }
     }

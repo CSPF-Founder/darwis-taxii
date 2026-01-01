@@ -211,10 +211,7 @@ impl SightingBuilder {
         if invalid_sighting_types.contains(&sighting_type) {
             return Err(Error::InvalidPropertyValue {
                 property: "sighting_of_ref".to_string(),
-                message: format!(
-                    "'{}' is not a valid SDO type for sighting_of_ref",
-                    sighting_type
-                ),
+                message: format!("'{sighting_type}' is not a valid SDO type for sighting_of_ref"),
             });
         }
 
@@ -247,7 +244,7 @@ impl SightingBuilder {
         {
             return Err(Error::InvalidPropertyValue {
                 property: "count".to_string(),
-                message: format!("count must be between 0 and {}", SIGHTING_COUNT_MAX),
+                message: format!("count must be between 0 and {SIGHTING_COUNT_MAX}"),
             });
         }
 

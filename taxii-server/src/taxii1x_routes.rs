@@ -128,7 +128,7 @@ pub async fn taxii1x_service_handler(
         Err(e) => {
             let version = get_version_from_headers(&headers);
             return taxii_error_response(
-                &format!("Failed to parse TAXII message: {}", e),
+                &format!("Failed to parse TAXII message: {e}"),
                 None,
                 StatusCode::BAD_REQUEST,
                 version,
@@ -174,7 +174,7 @@ pub async fn taxii1x_service_handler(
         service: ServiceInfo {
             id: service.id.clone().unwrap_or_default(),
             service_type: service.service_type.clone(),
-            address: format!("/services/{}/", service_id),
+            address: format!("/services/{service_id}/"),
             description: service
                 .properties
                 .get("description")
@@ -197,10 +197,7 @@ pub async fn taxii1x_service_handler(
         Some(h) => h,
         None => {
             return taxii_error_response(
-                &format!(
-                    "No handler for message type: {} (version {})",
-                    message_type, version
-                ),
+                &format!("No handler for message type: {message_type} (version {version})"),
                 Some(message.message_id()),
                 StatusCode::BAD_REQUEST,
                 version,
@@ -321,7 +318,7 @@ pub async fn taxii1x_options_handler(
     };
 
     // Determine supported content bindings based on service configuration
-    let content_types = format!("{}, {}", VID_TAXII_XML_10, VID_TAXII_XML_11);
+    let content_types = format!("{VID_TAXII_XML_10}, {VID_TAXII_XML_11}");
 
     let headers = [
         (header::ALLOW, "POST, OPTIONS"),

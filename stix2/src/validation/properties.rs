@@ -113,7 +113,7 @@ pub fn validate_id(
     if let Some(prefix) = required_prefix
         && !id.starts_with(prefix)
     {
-        return Err(Error::InvalidId(format!("must start with '{}'", prefix)));
+        return Err(Error::InvalidId(format!("must start with '{prefix}'")));
     }
 
     // Extract UUID part
@@ -124,8 +124,7 @@ pub fn validate_id(
             Some(idx) => &id[idx + 2..],
             None => {
                 return Err(Error::InvalidId(format!(
-                    "not a valid STIX identifier, must match <object-type>--<UUID>: {}",
-                    id
+                    "not a valid STIX identifier, must match <object-type>--<UUID>: {id}"
                 )));
             }
         }
@@ -133,8 +132,7 @@ pub fn validate_id(
 
     if !check_uuid(uuid_part, spec_version, interoperability) {
         return Err(Error::InvalidId(format!(
-            "not a valid STIX identifier, must match <object-type>--<UUID>: {}",
-            id
+            "not a valid STIX identifier, must match <object-type>--<UUID>: {id}"
         )));
     }
 
@@ -146,16 +144,14 @@ pub fn validate_type(type_name: &str, spec_version: SpecVersion) -> Result<()> {
     let valid_pattern = if spec_version == SpecVersion::V20 {
         if !TYPE_REGEX.is_match(type_name) {
             return Err(Error::InvalidType(format!(
-                "Invalid type name '{}': must only contain the characters a-z (lowercase ASCII), 0-9, and hyphen (-).",
-                type_name
+                "Invalid type name '{type_name}': must only contain the characters a-z (lowercase ASCII), 0-9, and hyphen (-)."
             )));
         }
         true
     } else {
         if !TYPE_21_REGEX.is_match(type_name) {
             return Err(Error::InvalidType(format!(
-                "Invalid type name '{}': must only contain the characters a-z (lowercase ASCII), 0-9, and hyphen (-) and must begin with an a-z character",
-                type_name
+                "Invalid type name '{type_name}': must only contain the characters a-z (lowercase ASCII), 0-9, and hyphen (-) and must begin with an a-z character"
             )));
         }
         true
@@ -163,8 +159,7 @@ pub fn validate_type(type_name: &str, spec_version: SpecVersion) -> Result<()> {
 
     if valid_pattern && (type_name.len() < 3 || type_name.len() > 250) {
         return Err(Error::InvalidType(format!(
-            "Invalid type name '{}': must be between 3 and 250 characters.",
-            type_name
+            "Invalid type name '{type_name}': must be between 3 and 250 characters."
         )));
     }
 
@@ -245,7 +240,7 @@ impl IntegerProperty {
         {
             return Err(Error::InvalidPropertyValue {
                 property: "integer".to_string(),
-                message: format!("minimum value is {}. received {}", min, value),
+                message: format!("minimum value is {min}. received {value}"),
             });
         }
 
@@ -254,7 +249,7 @@ impl IntegerProperty {
         {
             return Err(Error::InvalidPropertyValue {
                 property: "integer".to_string(),
-                message: format!("maximum value is {}. received {}", max, value),
+                message: format!("maximum value is {max}. received {value}"),
             });
         }
 
@@ -308,7 +303,7 @@ impl FloatProperty {
         {
             return Err(Error::InvalidPropertyValue {
                 property: "float".to_string(),
-                message: format!("minimum value is {}. received {}", min, value),
+                message: format!("minimum value is {min}. received {value}"),
             });
         }
 
@@ -317,7 +312,7 @@ impl FloatProperty {
         {
             return Err(Error::InvalidPropertyValue {
                 property: "float".to_string(),
-                message: format!("maximum value is {}. received {}", max, value),
+                message: format!("maximum value is {max}. received {value}"),
             });
         }
 
@@ -567,7 +562,7 @@ impl EnumProperty {
         if !self.allowed.contains(&value.to_string()) {
             return Err(Error::InvalidPropertyValue {
                 property: "enum".to_string(),
-                message: format!("value '{}' is not valid for this enumeration.", value),
+                message: format!("value '{value}' is not valid for this enumeration."),
             });
         }
         Ok(CleanResult::ok(value.to_string()))
@@ -624,7 +619,7 @@ pub struct IdProperty {
 impl IdProperty {
     pub fn new(type_name: &str, spec_version: SpecVersion) -> Self {
         Self {
-            required_prefix: format!("{}--", type_name),
+            required_prefix: format!("{type_name}--"),
             spec_version,
         }
     }
@@ -737,7 +732,7 @@ impl ReferenceProperty {
         let obj_type = value
             .split("--")
             .next()
-            .ok_or_else(|| Error::InvalidId(format!("Invalid reference format: {}", value)))?;
+            .ok_or_else(|| Error::InvalidId(format!("Invalid reference format: {value}")))?;
 
         // Check if it's a custom type (starts with x- or is unregistered)
         let has_custom = obj_type.starts_with("x-")
@@ -773,8 +768,7 @@ impl ReferenceProperty {
         // Check custom content
         if !allow_custom && has_custom {
             return Err(Error::CustomContentError(format!(
-                "reference to custom object type: {}",
-                obj_type
+                "reference to custom object type: {obj_type}"
             )));
         }
 
@@ -868,7 +862,7 @@ pub fn validate_hash_value(algorithm: &str, value: &str) -> Result<()> {
         if !value.chars().all(|c| c.is_ascii_hexdigit()) {
             return Err(Error::InvalidPropertyValue {
                 property: "hashes".to_string(),
-                message: format!("'{}' is not a valid {} hash", value, algorithm),
+                message: format!("'{value}' is not a valid {algorithm} hash"),
             });
         }
     }
@@ -900,8 +894,7 @@ pub fn validate_hashes(
             has_custom = true;
             if !allow_custom {
                 return Err(Error::CustomContentError(format!(
-                    "custom hash algorithm: {}",
-                    hash_key
+                    "custom hash algorithm: {hash_key}"
                 )));
             }
         }

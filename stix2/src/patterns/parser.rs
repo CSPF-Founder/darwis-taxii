@@ -32,10 +32,9 @@ pub fn parse_pattern(input: &str) -> Result<PatternExpression> {
     match parse_observation_expression(input) {
         Ok((remaining, expr)) if remaining.trim().is_empty() => Ok(expr),
         Ok((remaining, _)) => Err(Error::PatternParse(format!(
-            "Unexpected input remaining: {}",
-            remaining
+            "Unexpected input remaining: {remaining}"
         ))),
-        Err(e) => Err(Error::PatternParse(format!("Parse error: {:?}", e))),
+        Err(e) => Err(Error::PatternParse(format!("Parse error: {e:?}"))),
     }
 }
 

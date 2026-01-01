@@ -150,7 +150,7 @@ impl CommonProperties {
         let key = if key.starts_with("x_") {
             key
         } else {
-            format!("x_{}", key)
+            format!("x_{key}")
         };
         self.custom_properties.insert(key, value);
     }

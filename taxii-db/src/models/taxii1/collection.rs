@@ -255,10 +255,7 @@ impl DataCollection {
 
         // Verify collection exists
         Self::find(pool, collection_id).await?.ok_or_else(|| {
-            DatabaseError::NotFound(format!(
-                "Collection with id {} does not exist",
-                collection_id
-            ))
+            DatabaseError::NotFound(format!("Collection with id {collection_id} does not exist"))
         })?;
 
         // Verify all services exist

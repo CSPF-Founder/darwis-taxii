@@ -12,10 +12,10 @@ members = [
 ]
 
 [workspace.package]
-version = "0.1.0"
+version = "0.1.1"
 edition = "2024"
 license = "BSD-3-Clause"
-rust-version = "1.85"
+rust-version = "1.88"
 authors = ["Cyber Security and Privacy Foundation"]
 homepage = "https://cysecurity.org/"
 

@@ -62,10 +62,7 @@ impl Constrained for ObservedData {
         if self.number_observed < 1 || self.number_observed > NUMBER_OBSERVED_MAX {
             return Err(Error::InvalidPropertyValue {
                 property: "number_observed".to_string(),
-                message: format!(
-                    "number_observed must be between 1 and {}",
-                    NUMBER_OBSERVED_MAX
-                ),
+                message: format!("number_observed must be between 1 and {NUMBER_OBSERVED_MAX}"),
             });
         }
 

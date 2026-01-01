@@ -34,7 +34,7 @@ async fn run_migrations(pool: TaxiiPool) -> Result<(), Box<dyn std::error::Error
             Ok(())
         }
         Err(e) => {
-            eprintln!("Migration failed: {}", e);
+            eprintln!("Migration failed: {e}");
             Err(e.into())
         }
     }
@@ -68,10 +68,7 @@ async fn show_status(pool: TaxiiPool) -> Result<(), Box<dyn std::error::Error>> 
     if pending_count == 0 {
         println!("All migrations are up to date.");
     } else {
-        println!(
-            "{} pending migration(s). Run 'taxii-cli migrate run' to apply.",
-            pending_count
-        );
+        println!("{pending_count} pending migration(s). Run 'taxii-cli migrate run' to apply.");
     }
 
     Ok(())

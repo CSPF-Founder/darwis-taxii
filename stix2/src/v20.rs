@@ -81,8 +81,8 @@ pub const STIX_21_ONLY_TYPES: &[&str] = &[
 /// assert_eq!(version, "2.1");
 /// ```
 pub fn detect_spec_version(json: &str) -> Result<&'static str> {
-    let value: Value = serde_json::from_str(json)
-        .map_err(|e| Error::Custom(format!("JSON parse error: {}", e)))?;
+    let value: Value =
+        serde_json::from_str(json).map_err(|e| Error::Custom(format!("JSON parse error: {e}")))?;
 
     Ok(match detect_version(&value) {
         StixVersion::V20 => "2.0",
@@ -176,8 +176,8 @@ fn is_observable_type(type_str: &str) -> bool {
 
 /// Parse STIX 2.0 JSON and return a version-aware wrapper.
 pub fn parse_v20(json: &str) -> Result<Stix20Object> {
-    let value: Value = serde_json::from_str(json)
-        .map_err(|e| Error::Custom(format!("JSON parse error: {}", e)))?;
+    let value: Value =
+        serde_json::from_str(json).map_err(|e| Error::Custom(format!("JSON parse error: {e}")))?;
 
     let version = detect_version(&value);
     if version == StixVersion::V21 {
@@ -191,8 +191,8 @@ pub fn parse_v20(json: &str) -> Result<Stix20Object> {
 
 /// Parse any STIX version (2.0 or 2.1) and return a 2.1 object.
 pub fn parse_any_version(json: &str) -> Result<StixObject> {
-    let value: Value = serde_json::from_str(json)
-        .map_err(|e| Error::Custom(format!("JSON parse error: {}", e)))?;
+    let value: Value =
+        serde_json::from_str(json).map_err(|e| Error::Custom(format!("JSON parse error: {e}")))?;
 
     let version = detect_version(&value);
 
@@ -235,13 +235,13 @@ impl Stix20Object {
     /// Serialize to JSON string.
     pub fn to_json(&self) -> Result<String> {
         serde_json::to_string(&self.value)
-            .map_err(|e| Error::Custom(format!("Serialization error: {}", e)))
+            .map_err(|e| Error::Custom(format!("Serialization error: {e}")))
     }
 
     /// Serialize to pretty JSON string.
     pub fn to_json_pretty(&self) -> Result<String> {
         serde_json::to_string_pretty(&self.value)
-            .map_err(|e| Error::Custom(format!("Serialization error: {}", e)))
+            .map_err(|e| Error::Custom(format!("Serialization error: {e}")))
     }
 }
 
@@ -274,7 +274,7 @@ pub fn upgrade_to_v21(v20: &Stix20Object) -> Result<StixObject> {
 
     // Parse as STIX 2.1
     let json = serde_json::to_string(&value)
-        .map_err(|e| Error::Custom(format!("Serialization error: {}", e)))?;
+        .map_err(|e| Error::Custom(format!("Serialization error: {e}")))?;
 
     crate::parse(&json)
 }
@@ -284,15 +284,14 @@ pub fn upgrade_to_v21(v20: &Stix20Object) -> Result<StixObject> {
 /// Note: This may lose information for 2.1-only features.
 pub fn downgrade_to_v20(v21: &StixObject) -> Result<Stix20Object> {
     let mut value = serde_json::to_value(v21)
-        .map_err(|e| Error::Custom(format!("Serialization error: {}", e)))?;
+        .map_err(|e| Error::Custom(format!("Serialization error: {e}")))?;
 
     // Check if the object type exists in 2.0
     if let Some(type_str) = value.get("type").and_then(|v| v.as_str())
         && STIX_21_ONLY_TYPES.contains(&type_str)
     {
         return Err(Error::Custom(format!(
-            "Object type '{}' does not exist in STIX 2.0",
-            type_str
+            "Object type '{type_str}' does not exist in STIX 2.0"
         )));
     }
 
@@ -373,7 +372,7 @@ fn generate_sco_id(type_name: &str, properties: &Map<String, Value>) -> Result<S
         ])
     );
 
-    Ok(format!("{}--{}", type_name, uuid))
+    Ok(format!("{type_name}--{uuid}"))
 }
 
 /// Migrate object properties from 2.0 to 2.1 format.
@@ -516,7 +515,7 @@ pub struct Bundle20 {
 impl Bundle20 {
     /// Parse a STIX 2.0 bundle.
     pub fn parse(json: &str) -> Result<Self> {
-        serde_json::from_str(json).map_err(|e| Error::Custom(format!("Bundle parse error: {}", e)))
+        serde_json::from_str(json).map_err(|e| Error::Custom(format!("Bundle parse error: {e}")))
     }
 
     /// Upgrade all objects in the bundle to STIX 2.1.
@@ -531,7 +530,7 @@ impl Bundle20 {
                 Ok(obj) => objects.push(obj),
                 Err(e) => {
                     // Log warning but continue with other objects
-                    eprintln!("Warning: Failed to upgrade object: {}", e);
+                    eprintln!("Warning: Failed to upgrade object: {e}");
                 }
             }
         }

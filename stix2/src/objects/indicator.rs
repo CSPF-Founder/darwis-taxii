@@ -207,7 +207,7 @@ impl IndicatorBuilder {
     pub fn ip_address(ip: impl Into<String>) -> Self {
         let ip = ip.into();
         Self::new()
-            .pattern(format!("[ipv4-addr:value = '{}']", ip))
+            .pattern(format!("[ipv4-addr:value = '{ip}']"))
             .pattern_type(PatternType::Stix)
             .valid_from_now()
             .indicator_type(IndicatorType::MaliciousActivity)
@@ -217,7 +217,7 @@ impl IndicatorBuilder {
     pub fn domain(domain: impl Into<String>) -> Self {
         let domain = domain.into();
         Self::new()
-            .pattern(format!("[domain-name:value = '{}']", domain))
+            .pattern(format!("[domain-name:value = '{domain}']"))
             .pattern_type(PatternType::Stix)
             .valid_from_now()
             .indicator_type(IndicatorType::MaliciousActivity)
@@ -227,7 +227,7 @@ impl IndicatorBuilder {
     pub fn file_hash(algorithm: &str, hash: impl Into<String>) -> Self {
         let hash = hash.into();
         Self::new()
-            .pattern(format!("[file:hashes.'{}' = '{}']", algorithm, hash))
+            .pattern(format!("[file:hashes.'{algorithm}' = '{hash}']"))
             .pattern_type(PatternType::Stix)
             .valid_from_now()
             .indicator_type(IndicatorType::MaliciousActivity)
@@ -237,7 +237,7 @@ impl IndicatorBuilder {
     pub fn url(url: impl Into<String>) -> Self {
         let url = url.into();
         Self::new()
-            .pattern(format!("[url:value = '{}']", url))
+            .pattern(format!("[url:value = '{url}']"))
             .pattern_type(PatternType::Stix)
             .valid_from_now()
             .indicator_type(IndicatorType::MaliciousActivity)

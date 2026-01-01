@@ -334,7 +334,7 @@ impl STIXObject {
         let mut param_idx = 2;
 
         if added_after.is_some() {
-            query.push_str(&format!(" AND date_added > ${}", param_idx));
+            query.push_str(&format!(" AND date_added > ${param_idx}"));
             param_idx += 1;
         }
 
@@ -349,17 +349,17 @@ impl STIXObject {
         }
 
         if match_id.is_some() {
-            query.push_str(&format!(" AND id = ANY(${})", param_idx));
+            query.push_str(&format!(" AND id = ANY(${param_idx})"));
             param_idx += 1;
         }
 
         if match_type.is_some() {
-            query.push_str(&format!(" AND type = ANY(${})", param_idx));
+            query.push_str(&format!(" AND type = ANY(${param_idx})"));
             param_idx += 1;
         }
 
         if match_spec_version.is_some() {
-            query.push_str(&format!(" AND spec_version = ANY(${})", param_idx));
+            query.push_str(&format!(" AND spec_version = ANY(${param_idx})"));
             param_idx += 1;
         }
 
@@ -387,7 +387,7 @@ impl STIXObject {
                     .to_string();
                 param_idx = 2;
                 if added_after.is_some() {
-                    query.push_str(&format!(" AND date_added > ${}", param_idx));
+                    query.push_str(&format!(" AND date_added > ${param_idx}"));
                     param_idx += 1;
                 }
                 if next_kwargs.is_some() {
@@ -400,15 +400,15 @@ impl STIXObject {
                     param_idx += 2;
                 }
                 if match_id.is_some() {
-                    query.push_str(&format!(" AND id = ANY(${})", param_idx));
+                    query.push_str(&format!(" AND id = ANY(${param_idx})"));
                     param_idx += 1;
                 }
                 if match_type.is_some() {
-                    query.push_str(&format!(" AND type = ANY(${})", param_idx));
+                    query.push_str(&format!(" AND type = ANY(${param_idx})"));
                     param_idx += 1;
                 }
                 if match_spec_version.is_some() {
-                    query.push_str(&format!(" AND spec_version = ANY(${})", param_idx));
+                    query.push_str(&format!(" AND spec_version = ANY(${param_idx})"));
                 }
                 query.push_str(" ORDER BY id, version ASC");
             } else if has_last {
@@ -419,7 +419,7 @@ impl STIXObject {
                     .to_string();
                 param_idx = 2;
                 if added_after.is_some() {
-                    query.push_str(&format!(" AND date_added > ${}", param_idx));
+                    query.push_str(&format!(" AND date_added > ${param_idx}"));
                     param_idx += 1;
                 }
                 if next_kwargs.is_some() {
@@ -432,29 +432,26 @@ impl STIXObject {
                     param_idx += 2;
                 }
                 if match_id.is_some() {
-                    query.push_str(&format!(" AND id = ANY(${})", param_idx));
+                    query.push_str(&format!(" AND id = ANY(${param_idx})"));
                     param_idx += 1;
                 }
                 if match_type.is_some() {
-                    query.push_str(&format!(" AND type = ANY(${})", param_idx));
+                    query.push_str(&format!(" AND type = ANY(${param_idx})"));
                     param_idx += 1;
                 }
                 if match_spec_version.is_some() {
-                    query.push_str(&format!(" AND spec_version = ANY(${})", param_idx));
+                    query.push_str(&format!(" AND spec_version = ANY(${param_idx})"));
                 }
                 query.push_str(" ORDER BY id, version DESC");
             } else if !specific_versions.is_empty() {
                 // Filter by specific version timestamps
-                query.push_str(&format!(
-                    " AND version = ANY(${}::timestamptz[])",
-                    param_idx
-                ));
+                query.push_str(&format!(" AND version = ANY(${param_idx}::timestamptz[])"));
             }
         }
 
         // Wrap DISTINCT ON query for final ordering
         if has_first || has_last {
-            query = format!("SELECT * FROM ({}) AS subq ORDER BY date_added, id", query);
+            query = format!("SELECT * FROM ({query}) AS subq ORDER BY date_added, id");
         } else {
             query.push_str(" ORDER BY date_added, id");
         }
@@ -462,7 +459,7 @@ impl STIXObject {
         // Apply limit + 1 for efficient "more" detection
         let fetch_limit = limit.map(|lim| lim + 1);
         if let Some(lim) = fetch_limit {
-            query.push_str(&format!(" LIMIT {}", lim));
+            query.push_str(&format!(" LIMIT {lim}"));
         }
 
         // Bind parameters
@@ -559,7 +556,7 @@ impl STIXObject {
         let mut param_idx = 3;
 
         if added_after.is_some() {
-            query.push_str(&format!(" AND date_added > ${}", param_idx));
+            query.push_str(&format!(" AND date_added > ${param_idx}"));
             param_idx += 1;
         }
 
@@ -574,7 +571,7 @@ impl STIXObject {
         }
 
         if match_spec_version.is_some() {
-            query.push_str(&format!(" AND spec_version = ANY(${})", param_idx));
+            query.push_str(&format!(" AND spec_version = ANY(${param_idx})"));
         }
 
         query.push_str(" ORDER BY date_added, id");
@@ -582,7 +579,7 @@ impl STIXObject {
         // Apply limit + 1 for efficient "more" detection
         let fetch_limit = limit.map(|lim| lim + 1);
         if let Some(lim) = fetch_limit {
-            query.push_str(&format!(" LIMIT {}", lim));
+            query.push_str(&format!(" LIMIT {lim}"));
         }
 
         // Bind parameters

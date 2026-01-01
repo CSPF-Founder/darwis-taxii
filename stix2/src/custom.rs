@@ -66,8 +66,7 @@ pub fn validate_custom_type_name(type_name: &str) -> Result<()> {
     // Must start with x- for custom types, or be an extension definition
     if !type_name.starts_with("x-") && !type_name.starts_with("extension-definition--") {
         return Err(Error::InvalidType(format!(
-            "Custom type name '{}' must start with 'x-' or 'extension-definition--'",
-            type_name
+            "Custom type name '{type_name}' must start with 'x-' or 'extension-definition--'"
         )));
     }
 
@@ -78,9 +77,8 @@ pub fn validate_custom_type_name(type_name: &str) -> Result<()> {
 
     if !valid_chars {
         return Err(Error::InvalidType(format!(
-            "Custom type name '{}' contains invalid characters. \
-             Use only lowercase letters, numbers, and hyphens.",
-            type_name
+            "Custom type name '{type_name}' contains invalid characters. \
+             Use only lowercase letters, numbers, and hyphens."
         )));
     }
 
@@ -105,8 +103,7 @@ pub fn validate_custom_type_name(type_name: &str) -> Result<()> {
 pub fn validate_extension_type_name(type_name: &str) -> Result<()> {
     if !type_name.ends_with("-ext") && !type_name.starts_with("extension-definition--") {
         return Err(Error::InvalidType(format!(
-            "Extension type name '{}' must end with '-ext' or start with 'extension-definition--'",
-            type_name
+            "Extension type name '{type_name}' must end with '-ext' or start with 'extension-definition--'"
         )));
     }
 

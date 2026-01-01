@@ -383,8 +383,7 @@ fn convert_permissions(
                 // Validate TAXII 1.x permission
                 if !TAXII1_PERMISSIONS.contains(&s.as_str()) {
                     return Err(format!(
-                        "Invalid TAXII 1.x permission '{}' for collection '{}'. Valid: {:?}",
-                        s, collection, TAXII1_PERMISSIONS
+                        "Invalid TAXII 1.x permission '{s}' for collection '{collection}'. Valid: {TAXII1_PERMISSIONS:?}"
                     ));
                 }
                 PermissionValue::Taxii1(s.clone())
@@ -394,8 +393,7 @@ fn convert_permissions(
                 for p in list {
                     if !TAXII2_PERMISSIONS.contains(&p.as_str()) {
                         return Err(format!(
-                            "Invalid TAXII 2.x permission '{}' for collection '{}'. Valid: {:?}",
-                            p, collection, TAXII2_PERMISSIONS
+                            "Invalid TAXII 2.x permission '{p}' for collection '{collection}'. Valid: {TAXII2_PERMISSIONS:?}"
                         ));
                     }
                 }
@@ -423,14 +421,14 @@ pub async fn handle_content(
             with_messages,
         } => {
             let start_time: DateTime<Utc> = DateTime::parse_from_rfc3339(&begin)
-                .map_err(|e| format!("Invalid begin timestamp: {}", e))?
+                .map_err(|e| format!("Invalid begin timestamp: {e}"))?
                 .with_timezone(&Utc);
 
             let end_time: Option<DateTime<Utc>> = end
                 .map(|e| {
                     DateTime::parse_from_rfc3339(&e)
                         .map(|dt| dt.with_timezone(&Utc))
-                        .map_err(|err| format!("Invalid end timestamp: {}", err))
+                        .map_err(|err| format!("Invalid end timestamp: {err}"))
                 })
                 .transpose()?;
 
@@ -441,11 +439,11 @@ pub async fn handle_content(
                     .delete_content_blocks(coll_name, start_time, end_time, with_messages)
                     .await?;
 
-                println!("Deleted {} content blocks from '{}'", deleted, coll_name);
+                println!("Deleted {deleted} content blocks from '{coll_name}'");
                 total_deleted += deleted;
             }
 
-            println!("Total deleted: {} content blocks", total_deleted);
+            println!("Total deleted: {total_deleted} content blocks");
         }
     }
 

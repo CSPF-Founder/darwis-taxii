@@ -3095,7 +3095,7 @@ checksum = "6ce2be8dc25455e1f91df71bfa12ad37d7af1092ae736f3a6cd0e37bc7810596"
 
 [[package]]
 name = "stix2"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "base64",
  "chrono",
@@ -3200,7 +3200,7 @@ dependencies = [
 
 [[package]]
 name = "taxii-1x"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "axum",
  "base64",
@@ -3219,7 +3219,7 @@ dependencies = [
 
 [[package]]
 name = "taxii-2x"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "axum",
  "chrono",
@@ -3235,7 +3235,7 @@ dependencies = [
 
 [[package]]
 name = "taxii-auth"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "base64",
  "chrono",
@@ -3254,7 +3254,7 @@ dependencies = [
 
 [[package]]
 name = "taxii-cli"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "chrono",
  "clap",
@@ -3274,7 +3274,7 @@ dependencies = [
 
 [[package]]
 name = "taxii-core"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "chrono",
  "config",
@@ -3290,7 +3290,7 @@ dependencies = [
 
 [[package]]
 name = "taxii-db"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "base64",
  "chrono",
@@ -3306,7 +3306,7 @@ dependencies = [
 
 [[package]]
 name = "taxii-server"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "axum",
  "base64",

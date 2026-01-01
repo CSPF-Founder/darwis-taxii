@@ -193,7 +193,7 @@ fn parse_added_after(value: Option<&str>) -> Taxii2Result<Option<DateTime<Utc>>>
 /// A `ValidatedBundle` containing the parsed objects and raw JSON data.
 pub fn validate_envelope(json_data: &[u8], _allow_custom: bool) -> Taxii2Result<ValidatedBundle> {
     let json_str = std::str::from_utf8(json_data)
-        .map_err(|e| Taxii2Error::Validation(format!("Invalid UTF-8: {}", e)))?;
+        .map_err(|e| Taxii2Error::Validation(format!("Invalid UTF-8: {e}")))?;
 
     // Parse JSON first to check structure
     let json_value: serde_json::Value = serde_json::from_str(json_str)?;

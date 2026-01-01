@@ -380,7 +380,7 @@ pub fn new_version_with_changes(
 
     // Serialize the object to JSON
     let mut obj_value = serde_json::to_value(obj.clone())
-        .map_err(|e| Error::custom(format!("Failed to serialize object: {}", e)))?;
+        .map_err(|e| Error::custom(format!("Failed to serialize object: {e}")))?;
 
     // Apply the changes
     if let Value::Object(ref mut obj_map) = obj_value {
@@ -421,7 +421,7 @@ pub fn new_version_with_changes(
 
     // Deserialize back to StixObject
     serde_json::from_value(obj_value)
-        .map_err(|e| Error::custom(format!("Failed to deserialize updated object: {}", e)))
+        .map_err(|e| Error::custom(format!("Failed to deserialize updated object: {e}")))
 }
 
 /// Builder for creating new object versions with a fluent API.
@@ -469,13 +469,12 @@ impl<'a> VersionBuilder<'a> {
         // Check if this is an unmodifiable property
         if UNMODIFIABLE_PROPERTIES.contains(&key) {
             return Err(Error::ImmutableProperty(format!(
-                "Cannot modify property: {}",
-                key
+                "Cannot modify property: {key}"
             )));
         }
 
         let json_value = serde_json::to_value(value)
-            .map_err(|e| Error::custom(format!("Failed to serialize value: {}", e)))?;
+            .map_err(|e| Error::custom(format!("Failed to serialize value: {e}")))?;
 
         self.changes.insert(key.to_string(), json_value);
         Ok(self)
@@ -493,8 +492,7 @@ impl<'a> VersionBuilder<'a> {
         // Check if this is an unmodifiable property
         if UNMODIFIABLE_PROPERTIES.contains(&key) {
             return Err(Error::ImmutableProperty(format!(
-                "Cannot remove property: {}",
-                key
+                "Cannot remove property: {key}"
             )));
         }
 
@@ -549,7 +547,7 @@ pub fn remove_custom_properties(obj: &StixObject) -> Result<Option<StixObject>> 
 
     // Serialize to find custom properties
     let obj_value = serde_json::to_value(obj.clone())
-        .map_err(|e| Error::custom(format!("Failed to serialize object: {}", e)))?;
+        .map_err(|e| Error::custom(format!("Failed to serialize object: {e}")))?;
 
     if let Value::Object(obj_map) = &obj_value {
         // Find custom properties

@@ -381,10 +381,10 @@ impl DataSink for FileSystemSink {
 
             let modified = get_modified(&object).unwrap_or_default();
             let filename = Self::timestamp_to_filename(&modified);
-            id_dir.join(format!("{}.json", filename))
+            id_dir.join(format!("{filename}.json"))
         } else {
             // Unversioned: use id as filename
-            type_dir.join(format!("{}.json", id))
+            type_dir.join(format!("{id}.json"))
         };
 
         // Don't overwrite existing files
@@ -428,7 +428,7 @@ impl DataSink for FileSystemSink {
         }
 
         // Try unversioned path
-        let file_path = type_dir.join(format!("{}.json", id));
+        let file_path = type_dir.join(format!("{id}.json"));
         if file_path.exists() {
             fs::remove_file(&file_path).map_err(|e| Error::io(e.to_string()))?;
         }

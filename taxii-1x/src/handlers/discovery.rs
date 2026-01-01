@@ -48,7 +48,7 @@ impl DiscoveryRequest11Handler {
                     .get("address")
                     .and_then(|v| v.as_str())
                     .map(String::from)
-                    .unwrap_or_else(|| format!("/services/{}/", service_id));
+                    .unwrap_or_else(|| format!("/services/{service_id}/"));
 
                 let protocol_binding = service
                     .properties
@@ -120,7 +120,7 @@ impl DiscoveryRequest10Handler {
                     .get("address")
                     .and_then(|v| v.as_str())
                     .map(String::from)
-                    .unwrap_or_else(|| format!("/services/{}/", service_id));
+                    .unwrap_or_else(|| format!("/services/{service_id}/"));
 
                 let protocol_binding = service
                     .properties

@@ -180,8 +180,7 @@ pub fn validate_permissions(permissions: &HashMap<String, PermissionValue>) -> R
             PermissionValue::Taxii1(s) => {
                 if !TAXII1_PERMISSIONS.contains(&s.as_str()) {
                     return Err(format!(
-                        "Unknown TAXII1 permission '{}' specified for collection '{}'",
-                        s, collection_name
+                        "Unknown TAXII1 permission '{s}' specified for collection '{collection_name}'"
                     ));
                 }
             }
@@ -189,8 +188,7 @@ pub fn validate_permissions(permissions: &HashMap<String, PermissionValue>) -> R
                 for p in list {
                     if !TAXII2_PERMISSIONS.contains(&p.as_str()) {
                         return Err(format!(
-                            "Unknown TAXII2 permission '{}' specified for collection '{}'",
-                            p, collection_name
+                            "Unknown TAXII2 permission '{p}' specified for collection '{collection_name}'"
                         ));
                     }
                 }

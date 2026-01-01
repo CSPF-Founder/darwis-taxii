@@ -159,10 +159,7 @@ pub fn check_timestamp_order(
     {
         return Err(Error::InvalidPropertyValue {
             property: second_name.to_string(),
-            message: format!(
-                "{} must be greater than or equal to {}",
-                second_name, first_name
-            ),
+            message: format!("{second_name} must be greater than or equal to {first_name}"),
         });
     }
     Ok(())
@@ -182,7 +179,7 @@ pub fn check_timestamp_order_strict(
     {
         return Err(Error::InvalidPropertyValue {
             property: second_name.to_string(),
-            message: format!("{} must be later than {}", second_name, first_name),
+            message: format!("{second_name} must be later than {first_name}"),
         });
     }
     Ok(())
@@ -198,10 +195,7 @@ pub fn check_conditional_required(
     if condition && !is_present {
         return Err(Error::InvalidPropertyValue {
             property: property_name.to_string(),
-            message: format!(
-                "'{}' is a required property when {}",
-                property_name, condition_desc
-            ),
+            message: format!("'{property_name}' is a required property when {condition_desc}"),
         });
     }
     Ok(())
@@ -217,10 +211,7 @@ pub fn check_conditional_excluded(
     if condition && is_present {
         return Err(Error::InvalidPropertyValue {
             property: property_name.to_string(),
-            message: format!(
-                "'{}' must not be present when {}",
-                property_name, condition_desc
-            ),
+            message: format!("'{property_name}' must not be present when {condition_desc}"),
         });
     }
     Ok(())
@@ -258,7 +249,7 @@ pub fn check_socket_options_keys(keys: &[&str]) -> Result<()> {
         if !ACCEPTABLE_PREFIXES.contains(&prefix) {
             return Err(Error::InvalidPropertyValue {
                 property: "options".to_string(),
-                message: format!("Incorrect options key: {}", key),
+                message: format!("Incorrect options key: {key}"),
             });
         }
     }
@@ -344,7 +335,7 @@ pub fn check_non_negative(value: i64, property_name: &str) -> Result<()> {
     if value < 0 {
         return Err(Error::InvalidPropertyValue {
             property: property_name.to_string(),
-            message: format!("'{}' must be a non-negative integer", property_name),
+            message: format!("'{property_name}' must be a non-negative integer"),
         });
     }
     Ok(())

@@ -29,14 +29,14 @@ use crate::core::error::{Error, Result};
 pub fn canonicalize(value: &Value) -> Result<String> {
     let mut buffer = Vec::new();
     write_canonical(&mut buffer, value)
-        .map_err(|e| Error::Custom(format!("Canonicalization error: {}", e)))?;
-    String::from_utf8(buffer).map_err(|e| Error::Custom(format!("UTF-8 error: {}", e)))
+        .map_err(|e| Error::Custom(format!("Canonicalization error: {e}")))?;
+    String::from_utf8(buffer).map_err(|e| Error::Custom(format!("UTF-8 error: {e}")))
 }
 
 /// Canonicalize a serializable value.
 pub fn canonicalize_object<T: serde::Serialize>(obj: &T) -> Result<String> {
     let value = serde_json::to_value(obj)
-        .map_err(|e| Error::Custom(format!("Serialization error: {}", e)))?;
+        .map_err(|e| Error::Custom(format!("Serialization error: {e}")))?;
     canonicalize(&value)
 }
 
@@ -102,10 +102,10 @@ fn compare_strings_utf16(a: &str, b: &str) -> std::cmp::Ordering {
 fn write_canonical_number<W: Write>(writer: &mut W, n: &Number) -> io::Result<()> {
     if let Some(i) = n.as_i64() {
         // Integer - write directly
-        write!(writer, "{}", i)
+        write!(writer, "{i}")
     } else if let Some(u) = n.as_u64() {
         // Unsigned integer
-        write!(writer, "{}", u)
+        write!(writer, "{u}")
     } else if let Some(f) = n.as_f64() {
         // Floating point - use ECMAScript formatting
         write_ecmascript_number(writer, f)
@@ -145,12 +145,12 @@ fn format_shortest_float(f: f64) -> String {
 
     if !(1e-6..1e21).contains(&abs_f) {
         // Use exponential notation
-        let s = format!("{:e}", f);
+        let s = format!("{f:e}");
         normalize_exponential(&s)
     } else {
         // Use decimal notation
         for precision in 0..17 {
-            let s = format!("{:.prec$}", f, prec = precision);
+            let s = format!("{f:.precision$}");
             if let Ok(parsed) = s.parse::<f64>()
                 && parsed == f
             {
@@ -158,7 +158,7 @@ fn format_shortest_float(f: f64) -> String {
                 return normalize_decimal(&s);
             }
         }
-        format!("{}", f)
+        format!("{f}")
     }
 }
 
@@ -237,7 +237,7 @@ pub fn canonical_hash(value: &Value) -> Result<String> {
 /// Create a deterministic hash of a serializable object.
 pub fn canonical_hash_object<T: serde::Serialize>(obj: &T) -> Result<String> {
     let value = serde_json::to_value(obj)
-        .map_err(|e| Error::Custom(format!("Serialization error: {}", e)))?;
+        .map_err(|e| Error::Custom(format!("Serialization error: {e}")))?;
     canonical_hash(&value)
 }
 

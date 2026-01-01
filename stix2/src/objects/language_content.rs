@@ -55,8 +55,7 @@ impl crate::validation::Constrained for LanguageContent {
             return Err(crate::core::error::Error::InvalidPropertyValue {
                 property: "object_ref".to_string(),
                 message: format!(
-                    "object_ref must reference an SDO, SCO, or SRO; '{}' is not valid",
-                    obj_type
+                    "object_ref must reference an SDO, SCO, or SRO; '{obj_type}' is not valid"
                 ),
             });
         }

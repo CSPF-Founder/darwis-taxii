@@ -52,7 +52,7 @@ pub enum Taxii1xError {
     /// Provides structured information about serialization failures:
     /// - `message`: Description of the serialization error
     /// - `element`: The element being serialized when the error occurred (if known)
-    #[error("XML serialization error: {message}{}", .element.as_ref().map(|e| format!(" (element: {})", e)).unwrap_or_default())]
+    #[error("XML serialization error: {message}{}", .element.as_ref().map(|e| format!(" (element: {e})")).unwrap_or_default())]
     XmlSerialize {
         /// Description of the serialization error.
         message: String,
@@ -72,9 +72,9 @@ pub enum Taxii1xError {
 /// Format XML error context for display.
 fn format_xml_context(element: &Option<String>, position: &Option<usize>) -> String {
     match (element, position) {
-        (Some(elem), Some(pos)) => format!(" (element: {}, position: {})", elem, pos),
-        (Some(elem), None) => format!(" (element: {})", elem),
-        (None, Some(pos)) => format!(" (position: {})", pos),
+        (Some(elem), Some(pos)) => format!(" (element: {elem}, position: {pos})"),
+        (Some(elem), None) => format!(" (element: {elem})"),
+        (None, Some(pos)) => format!(" (position: {pos})"),
         (None, None) => String::new(),
     }
 }

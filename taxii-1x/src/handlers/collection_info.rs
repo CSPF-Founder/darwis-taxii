@@ -72,7 +72,7 @@ impl CollectionInformationRequest11Handler {
                             .get("address")
                             .and_then(|v| v.as_str())
                             .map(String::from)
-                            .unwrap_or_else(|| format!("/services/{}/", service_id));
+                            .unwrap_or_else(|| format!("/services/{service_id}/"));
                         let protocol = svc
                             .properties
                             .get("protocol_binding")
@@ -108,7 +108,7 @@ impl CollectionInformationRequest11Handler {
                             .get("address")
                             .and_then(|v| v.as_str())
                             .map(String::from)
-                            .unwrap_or_else(|| format!("/services/{}/", service_id));
+                            .unwrap_or_else(|| format!("/services/{service_id}/"));
                         let protocol = svc
                             .properties
                             .get("protocol_binding")
@@ -144,7 +144,7 @@ impl CollectionInformationRequest11Handler {
                             .get("address")
                             .and_then(|v| v.as_str())
                             .map(String::from)
-                            .unwrap_or_else(|| format!("/services/{}/", service_id));
+                            .unwrap_or_else(|| format!("/services/{service_id}/"));
                         let protocol = svc
                             .properties
                             .get("protocol_binding")
@@ -250,7 +250,7 @@ impl FeedInformationRequest10Handler {
                             .get("address")
                             .and_then(|v| v.as_str())
                             .map(String::from)
-                            .unwrap_or_else(|| format!("/services/{}/", service_id));
+                            .unwrap_or_else(|| format!("/services/{service_id}/"));
                         let protocol = svc
                             .properties
                             .get("protocol_binding")
@@ -286,7 +286,7 @@ impl FeedInformationRequest10Handler {
                             .get("address")
                             .and_then(|v| v.as_str())
                             .map(String::from)
-                            .unwrap_or_else(|| format!("/services/{}/", service_id));
+                            .unwrap_or_else(|| format!("/services/{service_id}/"));
                         let protocol = svc
                             .properties
                             .get("protocol_binding")

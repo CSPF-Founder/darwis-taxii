@@ -99,7 +99,7 @@ impl Taxii2Repository for DbTaxii2Repository {
 
     async fn get_api_root(&self, api_root_id: &str) -> DatabaseResult<Option<ApiRoot>> {
         let uuid = Uuid::parse_str(api_root_id)
-            .map_err(|_| DatabaseError::NotFound(format!("Invalid UUID: {}", api_root_id)))?;
+            .map_err(|_| DatabaseError::NotFound(format!("Invalid UUID: {api_root_id}")))?;
 
         let api_root = crate::models::taxii2::ApiRoot::find(&self.pool, uuid).await?;
         Ok(api_root.map(Into::into))
@@ -114,9 +114,8 @@ impl Taxii2Repository for DbTaxii2Repository {
         api_root_id: Option<&str>,
     ) -> DatabaseResult<ApiRoot> {
         let id = match api_root_id {
-            Some(id_str) => Uuid::parse_str(id_str).map_err(|e| {
-                DatabaseError::InvalidData(format!("Invalid UUID '{}': {}", id_str, e))
-            })?,
+            Some(id_str) => Uuid::parse_str(id_str)
+                .map_err(|e| DatabaseError::InvalidData(format!("Invalid UUID '{id_str}': {e}")))?,
             None => Uuid::new_v4(),
         };
 
@@ -139,7 +138,7 @@ impl Taxii2Repository for DbTaxii2Repository {
 
     async fn get_collections(&self, api_root_id: &str) -> DatabaseResult<Vec<Collection>> {
         let uuid = Uuid::parse_str(api_root_id)
-            .map_err(|_| DatabaseError::NotFound(format!("Invalid UUID: {}", api_root_id)))?;
+            .map_err(|_| DatabaseError::NotFound(format!("Invalid UUID: {api_root_id}")))?;
 
         let collections =
             crate::models::taxii2::Collection::find_by_api_root(&self.pool, uuid).await?;
@@ -153,7 +152,7 @@ impl Taxii2Repository for DbTaxii2Repository {
         collection_id_or_alias: &str,
     ) -> DatabaseResult<Option<Collection>> {
         let api_root_uuid = Uuid::parse_str(api_root_id).map_err(|_| {
-            DatabaseError::NotFound(format!("Invalid API root UUID: {}", api_root_id))
+            DatabaseError::NotFound(format!("Invalid API root UUID: {api_root_id}"))
         })?;
 
         let collection = crate::models::taxii2::Collection::find_by_id_or_alias(
@@ -176,7 +175,7 @@ impl Taxii2Repository for DbTaxii2Repository {
         is_public_write: bool,
     ) -> DatabaseResult<Collection> {
         let api_root_uuid = Uuid::parse_str(api_root_id).map_err(|_| {
-            DatabaseError::NotFound(format!("Invalid API root UUID: {}", api_root_id))
+            DatabaseError::NotFound(format!("Invalid API root UUID: {api_root_id}"))
         })?;
 
         let c = crate::models::taxii2::Collection::create(
@@ -203,7 +202,7 @@ impl Taxii2Repository for DbTaxii2Repository {
         params: &Taxii2QueryParams<'_>,
     ) -> DatabaseResult<PaginatedResult<Vec<ManifestRecord>>> {
         let collection_uuid = Uuid::parse_str(collection_id).map_err(|_| {
-            DatabaseError::NotFound(format!("Invalid collection UUID: {}", collection_id))
+            DatabaseError::NotFound(format!("Invalid collection UUID: {collection_id}"))
         })?;
 
         let result =
@@ -221,7 +220,7 @@ impl Taxii2Repository for DbTaxii2Repository {
         params: &Taxii2QueryParams<'_>,
     ) -> DatabaseResult<PaginatedResult<Vec<STIXObject>>> {
         let collection_uuid = Uuid::parse_str(collection_id).map_err(|_| {
-            DatabaseError::NotFound(format!("Invalid collection UUID: {}", collection_id))
+            DatabaseError::NotFound(format!("Invalid collection UUID: {collection_id}"))
         })?;
 
         let result =
@@ -240,10 +239,10 @@ impl Taxii2Repository for DbTaxii2Repository {
         objects: &[serde_json::Value],
     ) -> DatabaseResult<Job> {
         let api_root_uuid = Uuid::parse_str(api_root_id).map_err(|_| {
-            DatabaseError::NotFound(format!("Invalid API root UUID: {}", api_root_id))
+            DatabaseError::NotFound(format!("Invalid API root UUID: {api_root_id}"))
         })?;
         let collection_uuid = Uuid::parse_str(collection_id).map_err(|_| {
-            DatabaseError::NotFound(format!("Invalid collection UUID: {}", collection_id))
+            DatabaseError::NotFound(format!("Invalid collection UUID: {collection_id}"))
         })?;
 
         // Create job using model
@@ -358,10 +357,10 @@ impl Taxii2Repository for DbTaxii2Repository {
         job_id: &str,
     ) -> DatabaseResult<Option<Job>> {
         let api_root_uuid = Uuid::parse_str(api_root_id).map_err(|_| {
-            DatabaseError::NotFound(format!("Invalid API root UUID: {}", api_root_id))
+            DatabaseError::NotFound(format!("Invalid API root UUID: {api_root_id}"))
         })?;
         let job_uuid = Uuid::parse_str(job_id)
-            .map_err(|_| DatabaseError::NotFound(format!("Invalid job UUID: {}", job_id)))?;
+            .map_err(|_| DatabaseError::NotFound(format!("Invalid job UUID: {job_id}")))?;
 
         let job = crate::models::taxii2::Job::find_by_api_root(&self.pool, api_root_uuid, job_uuid)
             .await?;
@@ -416,7 +415,7 @@ impl Taxii2Repository for DbTaxii2Repository {
         params: &Taxii2QueryParams<'_>,
     ) -> DatabaseResult<PaginatedResult<Vec<STIXObject>>> {
         let collection_uuid = Uuid::parse_str(collection_id).map_err(|_| {
-            DatabaseError::NotFound(format!("Invalid collection UUID: {}", collection_id))
+            DatabaseError::NotFound(format!("Invalid collection UUID: {collection_id}"))
         })?;
 
         // Check if object exists in collection
@@ -458,7 +457,7 @@ impl Taxii2Repository for DbTaxii2Repository {
         match_spec_version: Option<&[String]>,
     ) -> DatabaseResult<()> {
         let collection_uuid = Uuid::parse_str(collection_id).map_err(|_| {
-            DatabaseError::NotFound(format!("Invalid collection UUID: {}", collection_id))
+            DatabaseError::NotFound(format!("Invalid collection UUID: {collection_id}"))
         })?;
 
         crate::models::taxii2::STIXObject::delete_filtered(
@@ -483,7 +482,7 @@ impl Taxii2Repository for DbTaxii2Repository {
         match_spec_version: Option<&[String]>,
     ) -> DatabaseResult<PaginatedResult<Vec<VersionRecord>>> {
         let collection_uuid = Uuid::parse_str(collection_id).map_err(|_| {
-            DatabaseError::NotFound(format!("Invalid collection UUID: {}", collection_id))
+            DatabaseError::NotFound(format!("Invalid collection UUID: {collection_id}"))
         })?;
 
         let result = crate::models::taxii2::STIXObject::find_versions(

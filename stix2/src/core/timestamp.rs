@@ -189,7 +189,7 @@ impl FromStr for Timestamp {
                 // Try alternative formats
                 parse_timestamp_flexible(s)
             })
-            .map_err(|e| Error::InvalidTimestamp(format!("Failed to parse '{}': {}", s, e)))?;
+            .map_err(|e| Error::InvalidTimestamp(format!("Failed to parse '{s}': {e}")))?;
 
         Ok(Self {
             datetime,
@@ -218,7 +218,7 @@ fn parse_timestamp_flexible(s: &str) -> std::result::Result<DateTime<Utc>, Strin
         }
     }
 
-    Err(format!("Unable to parse timestamp: {}", s))
+    Err(format!("Unable to parse timestamp: {s}"))
 }
 
 impl Serialize for Timestamp {

@@ -50,7 +50,7 @@ async fn get_poll_instances_11(
                 .get("address")
                 .and_then(|v| v.as_str())
                 .map(String::from)
-                .unwrap_or_else(|| format!("/services/{}/", service_id));
+                .unwrap_or_else(|| format!("/services/{service_id}/"));
             let protocol = svc
                 .properties
                 .get("protocol_binding")
@@ -91,7 +91,7 @@ async fn get_poll_instances_10(
                 .get("address")
                 .and_then(|v| v.as_str())
                 .map(String::from)
-                .unwrap_or_else(|| format!("/services/{}/", service_id));
+                .unwrap_or_else(|| format!("/services/{service_id}/"));
             let protocol = svc
                 .properties
                 .get("protocol_binding")
@@ -181,7 +181,7 @@ impl SubscriptionRequest11Handler {
         // Validate action type
         if !ACT_TYPES_11.contains(&action) {
             return Err(Taxii1xError::StatusMessage {
-                message: format!("Invalid action type: {}", action),
+                message: format!("Invalid action type: {action}"),
                 in_response_to: Some(request.message_id.clone()),
                 status_type: StatusType::BadMessage,
                 status_detail: Some(action.to_string()),
@@ -234,7 +234,7 @@ impl SubscriptionRequest11Handler {
                                 message: "Content bindings not supported by collection".to_string(),
                                 in_response_to: Some(request.message_id.clone()),
                                 status_type: StatusType::UnsupportedContentBinding,
-                                status_detail: Some(format!("{:?}", details)),
+                                status_detail: Some(format!("{details:?}")),
                             });
                         }
 
@@ -281,7 +281,7 @@ impl SubscriptionRequest11Handler {
             ACT_UNSUBSCRIBE => {
                 let subscription_id = request.subscription_id.as_ref().ok_or_else(|| {
                     Taxii1xError::StatusMessage {
-                        message: format!("Action \"{}\" requires a subscription id", action),
+                        message: format!("Action \"{action}\" requires a subscription id"),
                         in_response_to: Some(request.message_id.clone()),
                         status_type: StatusType::BadMessage,
                         status_detail: None,
@@ -330,7 +330,7 @@ impl SubscriptionRequest11Handler {
             ACT_PAUSE => {
                 let subscription_id = request.subscription_id.as_ref().ok_or_else(|| {
                     Taxii1xError::StatusMessage {
-                        message: format!("Action \"{}\" requires a subscription id", action),
+                        message: format!("Action \"{action}\" requires a subscription id"),
                         in_response_to: Some(request.message_id.clone()),
                         status_type: StatusType::BadMessage,
                         status_detail: None,
@@ -376,7 +376,7 @@ impl SubscriptionRequest11Handler {
             ACT_RESUME => {
                 let subscription_id = request.subscription_id.as_ref().ok_or_else(|| {
                     Taxii1xError::StatusMessage {
-                        message: format!("Action \"{}\" requires a subscription id", action),
+                        message: format!("Action \"{action}\" requires a subscription id"),
                         in_response_to: Some(request.message_id.clone()),
                         status_type: StatusType::BadMessage,
                         status_detail: None,
@@ -476,7 +476,7 @@ impl SubscriptionRequest11Handler {
 
             _ => {
                 return Err(Taxii1xError::failure(
-                    format!("Unknown action: {}", action),
+                    format!("Unknown action: {action}"),
                     Some(request.message_id.clone()),
                 ));
             }
@@ -551,7 +551,7 @@ impl SubscriptionRequest10Handler {
         // Validate action type for TAXII 1.0 (no PAUSE/RESUME)
         if !ACT_TYPES_10.contains(&action) {
             return Err(Taxii1xError::StatusMessage {
-                message: format!("Invalid action type: {}", action),
+                message: format!("Invalid action type: {action}"),
                 in_response_to: Some(request.message_id.clone()),
                 status_type: StatusType::BadMessage,
                 status_detail: Some(action.to_string()),
@@ -632,7 +632,7 @@ impl SubscriptionRequest10Handler {
 
             _ => {
                 return Err(Taxii1xError::failure(
-                    format!("Unknown action: {}", action),
+                    format!("Unknown action: {action}"),
                     Some(request.message_id.clone()),
                 ));
             }

@@ -111,7 +111,7 @@ async fn resolve_poll_bindings_11(
                     message: "Content bindings not supported by collection".to_string(),
                     in_response_to: Some(request.message_id.clone()),
                     status_type: StatusType::UnsupportedContentBinding,
-                    status_detail: Some(format!("{:?}", details)),
+                    status_detail: Some(format!("{details:?}")),
                 });
             }
             matching
@@ -201,7 +201,7 @@ async fn resolve_poll_bindings_10(
                 message: "Content bindings not supported by collection".to_string(),
                 in_response_to: Some(request.message_id.clone()),
                 status_type: StatusType::UnsupportedContentBinding,
-                status_detail: Some(format!("{:?}", details)),
+                status_detail: Some(format!("{details:?}")),
             });
         }
 

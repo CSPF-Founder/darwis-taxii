@@ -300,7 +300,7 @@ impl ServerConfig {
 
 /// Get environment variable with DARWIS_TAXII_ prefix.
 fn env_var(name: &str) -> Option<String> {
-    env::var(format!("{}{}", ENV_PREFIX, name)).ok()
+    env::var(format!("{ENV_PREFIX}{name}")).ok()
 }
 
 /// Get and parse environment variable with DARWIS_TAXII_ prefix.

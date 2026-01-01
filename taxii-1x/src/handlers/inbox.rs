@@ -66,10 +66,7 @@ async fn validate_destinations_11(
             message: message.to_string(),
             in_response_to: Some(message_id.to_string()),
             status_type: StatusType::DestinationCollectionError,
-            status_detail: Some(format!(
-                "{}: {:?}",
-                SD_ACCEPTABLE_DESTINATION, available_names
-            )),
+            status_detail: Some(format!("{SD_ACCEPTABLE_DESTINATION}: {available_names:?}")),
         });
     }
 
@@ -91,10 +88,10 @@ async fn validate_destinations_11(
         // Only check against available set if user explicitly specified collections
         if user_specified && !available_set.contains(name.as_str()) {
             return Err(Taxii1xError::StatusMessage {
-                message: format!("Collection {} was not found", name),
+                message: format!("Collection {name} was not found"),
                 in_response_to: Some(message_id.to_string()),
                 status_type: StatusType::NotFound,
-                status_detail: Some(format!("{}: {}", SD_ITEM, name)),
+                status_detail: Some(format!("{SD_ITEM}: {name}")),
             });
         }
 

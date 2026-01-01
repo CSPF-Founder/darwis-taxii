@@ -67,7 +67,7 @@ impl Taxii1Repository for DbTaxii1Repository {
             .ok_or_else(|| DatabaseError::NotFound("Service ID required".to_string()))?;
 
         let properties_json = serde_json::to_string(&entity.properties).map_err(|e| {
-            DatabaseError::InvalidData(format!("Failed to serialize properties: {}", e))
+            DatabaseError::InvalidData(format!("Failed to serialize properties: {e}"))
         })?;
 
         let service = Service::upsert(
@@ -373,8 +373,7 @@ impl Taxii1Repository for DbTaxii1Repository {
             .await?
             .ok_or_else(|| {
                 DatabaseError::NotFound(format!(
-                    "Collection with name '{}' does not exist",
-                    collection_name
+                    "Collection with name '{collection_name}' does not exist"
                 ))
             })?;
 

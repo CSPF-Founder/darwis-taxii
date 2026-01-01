@@ -55,11 +55,11 @@ impl PatternExpression {
 impl fmt::Display for PatternExpression {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
-            PatternExpression::Comparison(c) => write!(f, "[{}]", c),
-            PatternExpression::And(a, b) => write!(f, "{} AND {}", a, b),
-            PatternExpression::Or(a, b) => write!(f, "{} OR {}", a, b),
-            PatternExpression::FollowedBy(a, b) => write!(f, "{} FOLLOWEDBY {}", a, b),
-            PatternExpression::Qualified(expr, qual) => write!(f, "{} {}", expr, qual),
+            PatternExpression::Comparison(c) => write!(f, "[{c}]"),
+            PatternExpression::And(a, b) => write!(f, "{a} AND {b}"),
+            PatternExpression::Or(a, b) => write!(f, "{a} OR {b}"),
+            PatternExpression::FollowedBy(a, b) => write!(f, "{a} FOLLOWEDBY {b}"),
+            PatternExpression::Qualified(expr, qual) => write!(f, "{expr} {qual}"),
         }
     }
 }
@@ -156,7 +156,7 @@ impl fmt::Display for ComparisonOperator {
             ComparisonOperator::IsSubset => "ISSUBSET",
             ComparisonOperator::IsSuperset => "ISSUPERSET",
         };
-        write!(f, "{}", s)
+        write!(f, "{s}")
     }
 }
 
@@ -185,19 +185,19 @@ impl fmt::Display for PatternValue {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
             PatternValue::String(s) => write!(f, "'{}'", s.replace('\'', "\\'")),
-            PatternValue::Integer(i) => write!(f, "{}", i),
-            PatternValue::Float(v) => write!(f, "{}", v),
+            PatternValue::Integer(i) => write!(f, "{i}"),
+            PatternValue::Float(v) => write!(f, "{v}"),
             PatternValue::Boolean(b) => write!(f, "{}", if *b { "true" } else { "false" }),
-            PatternValue::Timestamp(t) => write!(f, "t'{}'", t),
+            PatternValue::Timestamp(t) => write!(f, "t'{t}'"),
             PatternValue::Binary(b) => write!(f, "b'{}'", BASE64.encode(b)),
-            PatternValue::Hex(h) => write!(f, "h'{}'", h),
+            PatternValue::Hex(h) => write!(f, "h'{h}'"),
             PatternValue::List(items) => {
                 write!(f, "(")?;
                 for (i, item) in items.iter().enumerate() {
                     if i > 0 {
                         write!(f, ", ")?;
                     }
-                    write!(f, "{}", item)?;
+                    write!(f, "{item}")?;
                 }
                 write!(f, ")")
             }
@@ -219,10 +219,10 @@ pub enum Qualifier {
 impl fmt::Display for Qualifier {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
-            Qualifier::Within(secs) => write!(f, "WITHIN {} SECONDS", secs),
-            Qualifier::Repeats(count) => write!(f, "REPEATS {} TIMES", count),
+            Qualifier::Within(secs) => write!(f, "WITHIN {secs} SECONDS"),
+            Qualifier::Repeats(count) => write!(f, "REPEATS {count} TIMES"),
             Qualifier::StartStop { start, stop } => {
-                write!(f, "START t'{}' STOP t'{}'", start, stop)
+                write!(f, "START t'{start}' STOP t'{stop}'")
             }
         }
     }
@@ -261,27 +261,27 @@ impl Pattern {
 
     /// Create an IP address pattern.
     pub fn ip_address(ip: &str) -> Self {
-        Self::new(format!("[ipv4-addr:value = '{}']", ip))
+        Self::new(format!("[ipv4-addr:value = '{ip}']"))
     }
 
     /// Create a domain name pattern.
     pub fn domain(domain: &str) -> Self {
-        Self::new(format!("[domain-name:value = '{}']", domain))
+        Self::new(format!("[domain-name:value = '{domain}']"))
     }
 
     /// Create a file hash pattern.
     pub fn file_hash(algorithm: &str, hash: &str) -> Self {
-        Self::new(format!("[file:hashes.'{}' = '{}']", algorithm, hash))
+        Self::new(format!("[file:hashes.'{algorithm}' = '{hash}']"))
     }
 
     /// Create a URL pattern.
     pub fn url(url: &str) -> Self {
-        Self::new(format!("[url:value = '{}']", url))
+        Self::new(format!("[url:value = '{url}']"))
     }
 
     /// Create an email pattern.
     pub fn email(email: &str) -> Self {
-        Self::new(format!("[email-addr:value = '{}']", email))
+        Self::new(format!("[email-addr:value = '{email}']"))
     }
 }
 

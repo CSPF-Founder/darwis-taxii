@@ -232,17 +232,17 @@ impl ContentBlock {
             query.push_str(
                 " JOIN collection_to_content_block ctcb ON cb.id = ctcb.content_block_id",
             );
-            conditions.push(format!("ctcb.collection_id = ${}", param_idx));
+            conditions.push(format!("ctcb.collection_id = ${param_idx}"));
             param_idx += 1;
         }
 
         if filter.start_time.is_some() {
-            conditions.push(format!("cb.timestamp_label > ${}", param_idx));
+            conditions.push(format!("cb.timestamp_label > ${param_idx}"));
             param_idx += 1;
         }
 
         if filter.end_time.is_some() {
-            conditions.push(format!("cb.timestamp_label <= ${}", param_idx));
+            conditions.push(format!("cb.timestamp_label <= ${param_idx}"));
             param_idx += 1;
         }
 
@@ -251,7 +251,7 @@ impl ContentBlock {
             let mut binding_conditions = Vec::new();
             for binding in binds {
                 if binding.subtypes.is_empty() {
-                    binding_conditions.push(format!("cb.binding_id = ${}", param_idx));
+                    binding_conditions.push(format!("cb.binding_id = ${param_idx}"));
                     param_idx += 1;
                 } else {
                     binding_conditions.push(format!(
@@ -273,7 +273,7 @@ impl ContentBlock {
         query.push_str(" ORDER BY cb.timestamp_label ASC");
 
         if let Some(lim) = filter.limit {
-            query.push_str(&format!(" LIMIT {}", lim));
+            query.push_str(&format!(" LIMIT {lim}"));
         }
         query.push_str(&format!(" OFFSET {}", filter.offset));
 
@@ -318,17 +318,17 @@ impl ContentBlock {
             query.push_str(
                 " JOIN collection_to_content_block ctcb ON cb.id = ctcb.content_block_id",
             );
-            conditions.push(format!("ctcb.collection_id = ${}", param_idx));
+            conditions.push(format!("ctcb.collection_id = ${param_idx}"));
             param_idx += 1;
         }
 
         if filter.start_time.is_some() {
-            conditions.push(format!("cb.timestamp_label > ${}", param_idx));
+            conditions.push(format!("cb.timestamp_label > ${param_idx}"));
             param_idx += 1;
         }
 
         if filter.end_time.is_some() {
-            conditions.push(format!("cb.timestamp_label <= ${}", param_idx));
+            conditions.push(format!("cb.timestamp_label <= ${param_idx}"));
             param_idx += 1;
         }
 
@@ -336,7 +336,7 @@ impl ContentBlock {
             let mut binding_conditions = Vec::new();
             for binding in binds {
                 if binding.subtypes.is_empty() {
-                    binding_conditions.push(format!("cb.binding_id = ${}", param_idx));
+                    binding_conditions.push(format!("cb.binding_id = ${param_idx}"));
                     param_idx += 1;
                 } else {
                     binding_conditions.push(format!(

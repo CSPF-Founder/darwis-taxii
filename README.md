@@ -15,7 +15,7 @@ Rust port of [EclecticIQ OpenTAXII](https://github.com/EclecticIQ/OpenTAXII) wit
 
 ## Requirements
 
-- Rust 1.85+ (2024 edition)
+- Rust 1.88+ (2024 edition)
 - PostgreSQL 9.4+
 
 ## Quick Start

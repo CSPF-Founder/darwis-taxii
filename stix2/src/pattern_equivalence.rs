@@ -41,7 +41,7 @@ mod specials {
                 let mask_bits = if mask == 0 { 0 } else { !0u32 << (32 - mask) };
                 let masked = bits & mask_bits;
                 let canonical_ip = std::net::Ipv4Addr::from(masked);
-                return format!("{}/{}", canonical_ip, mask);
+                return format!("{canonical_ip}/{mask}");
             }
         }
         value.to_string()
@@ -63,7 +63,7 @@ mod specials {
                 let mask_bits = if mask == 0 { 0 } else { !0u128 << (128 - mask) };
                 let masked = bits & mask_bits;
                 let canonical_ip = std::net::Ipv6Addr::from(masked);
-                return format!("{}/{}", canonical_ip, mask);
+                return format!("{canonical_ip}/{mask}");
             }
         }
         value.to_string()
@@ -529,7 +529,7 @@ fn collect_pattern_info(
         }
         PatternExpression::Qualified(inner, qualifier) => {
             let inner_struct = collect_pattern_info(inner, comparisons);
-            PatternStructure::Qualified(Box::new(inner_struct), format!("{}", qualifier))
+            PatternStructure::Qualified(Box::new(inner_struct), format!("{qualifier}"))
         }
     }
 }
@@ -782,7 +782,7 @@ mod tests {
             assert!(children.contains(&a));
             assert!(children.contains(&b));
         } else {
-            panic!("Expected And structure, got {:?}", absorbed);
+            panic!("Expected And structure, got {absorbed:?}");
         }
     }
 
@@ -804,7 +804,7 @@ mod tests {
             assert!(children.contains(&a));
             assert!(children.contains(&b));
         } else {
-            panic!("Expected Or structure, got {:?}", absorbed);
+            panic!("Expected Or structure, got {absorbed:?}");
         }
     }
 
@@ -845,7 +845,7 @@ mod tests {
             assert!(children.contains(&a));
             assert!(children.contains(&c));
         } else {
-            panic!("Expected And structure, got {:?}", absorbed);
+            panic!("Expected And structure, got {absorbed:?}");
         }
     }
 
@@ -870,7 +870,7 @@ mod tests {
             assert!(children.contains(&a));
             assert!(children.contains(&b));
         } else {
-            panic!("Expected And structure, got {:?}", absorbed);
+            panic!("Expected And structure, got {absorbed:?}");
         }
     }
 }

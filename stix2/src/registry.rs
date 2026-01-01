@@ -28,7 +28,7 @@ impl FromStr for SpecVersion {
         match s {
             "2.0" => Ok(SpecVersion::V20),
             "2.1" => Ok(SpecVersion::V21),
-            _ => Err(Error::InvalidType(format!("Unknown STIX version: {}", s))),
+            _ => Err(Error::InvalidType(format!("Unknown STIX version: {s}"))),
         }
     }
 }

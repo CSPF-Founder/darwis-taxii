@@ -108,7 +108,7 @@ pub async fn handle_api_root(
             println!("  ID: {}", api_root.id);
             println!("  Title: {}", api_root.title);
             if let Some(desc) = &api_root.description {
-                println!("  Description: {}", desc);
+                println!("  Description: {desc}");
             }
             println!("  Default: {}", api_root.default);
             println!("  Public: {}", api_root.is_public);
@@ -161,7 +161,7 @@ pub async fn handle_collection(
             // Verify API root exists
             let api_root = persistence.get_api_root(&api_root_id).await?;
             if api_root.is_none() {
-                return Err(format!("API root '{}' not found", api_root_id).into());
+                return Err(format!("API root '{api_root_id}' not found").into());
             }
 
             let collection = persistence
@@ -180,10 +180,10 @@ pub async fn handle_collection(
             println!("  API Root: {}", collection.api_root_id);
             println!("  Title: {}", collection.title);
             if let Some(desc) = &collection.description {
-                println!("  Description: {}", desc);
+                println!("  Description: {desc}");
             }
             if let Some(a) = &collection.alias {
-                println!("  Alias: {}", a);
+                println!("  Alias: {a}");
             }
             println!("  Public Read: {}", collection.is_public);
             println!("  Public Write: {}", collection.is_public_write);
@@ -192,7 +192,7 @@ pub async fn handle_collection(
             let collections = persistence.get_collections(&api_root_id).await?;
 
             if collections.is_empty() {
-                println!("No collections found for API root '{}'.", api_root_id);
+                println!("No collections found for API root '{api_root_id}'.");
                 return Ok(());
             }
 
@@ -228,7 +228,7 @@ pub async fn handle_job(
     match action {
         JobAction::Cleanup => {
             let removed = persistence.job_cleanup().await?;
-            println!("{} job(s) removed", removed);
+            println!("{removed} job(s) removed");
         }
     }
 

@@ -233,10 +233,7 @@ impl RelationshipBuilder {
         if INVALID_RELATIONSHIP_REF_TYPES.contains(&source_type) {
             return Err(Error::InvalidPropertyValue {
                 property: "source_ref".to_string(),
-                message: format!(
-                    "'{}' is not a valid source type for a relationship",
-                    source_type
-                ),
+                message: format!("'{source_type}' is not a valid source type for a relationship"),
             });
         }
 
@@ -245,10 +242,7 @@ impl RelationshipBuilder {
         if INVALID_RELATIONSHIP_REF_TYPES.contains(&target_type) {
             return Err(Error::InvalidPropertyValue {
                 property: "target_ref".to_string(),
-                message: format!(
-                    "'{}' is not a valid target type for a relationship",
-                    target_type
-                ),
+                message: format!("'{target_type}' is not a valid target type for a relationship"),
             });
         }
 

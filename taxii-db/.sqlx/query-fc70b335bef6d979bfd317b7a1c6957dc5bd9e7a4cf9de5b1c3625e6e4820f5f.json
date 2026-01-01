@@ -58,13 +58,13 @@
     },
     "nullable": [
       false,
+      false,
       true,
-      true,
-      true,
-      true,
-      true,
-      true,
-      true
+      false,
+      false,
+      false,
+      false,
+      false
     ]
   },
   "hash": "fc70b335bef6d979bfd317b7a1c6957dc5bd9e7a4cf9de5b1c3625e6e4820f5f"

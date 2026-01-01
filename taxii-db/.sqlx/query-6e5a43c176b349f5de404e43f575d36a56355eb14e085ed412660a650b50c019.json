@@ -1,0 +1,16 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "INSERT INTO account_activity (account_id, event_type, ip_address, user_agent)\n               SELECT id, 'login_failed', $2::text::inet, $3\n               FROM accounts WHERE username = $1",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Text",
+        "Text",
+        "Text"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "6e5a43c176b349f5de404e43f575d36a56355eb14e085ed412660a650b50c019"
+}

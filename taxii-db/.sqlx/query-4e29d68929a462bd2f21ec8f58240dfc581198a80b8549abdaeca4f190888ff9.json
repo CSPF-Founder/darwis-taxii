@@ -1,0 +1,26 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n            SELECT a.id, a.username\n            FROM accounts a\n            WHERE NOT EXISTS (\n                SELECT 1 FROM account_activity\n                WHERE account_id = a.id AND event_type = 'login_success'\n            )\n            ORDER BY a.username\n            ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "id",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 1,
+        "name": "username",
+        "type_info": "Varchar"
+      }
+    ],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": [
+      false,
+      false
+    ]
+  },
+  "hash": "4e29d68929a462bd2f21ec8f58240dfc581198a80b8549abdaeca4f190888ff9"
+}

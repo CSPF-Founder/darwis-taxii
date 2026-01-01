@@ -24,5 +24,6 @@ serde_json.workspace = true
 thiserror.workspace = true
 tracing.workspace = true
 chrono.workspace = true
+tokio.workspace = true
 rand = "0.9"
 subtle = "2.6"

@@ -1,0 +1,58 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n            SELECT\n                a.id as \"account_id!\",\n                a.username as \"username!\",\n                a.is_admin as \"is_admin!\",\n                (\n                    SELECT created_at\n                    FROM account_activity\n                    WHERE account_id = a.id AND event_type = 'login_success'\n                    ORDER BY created_at DESC\n                    LIMIT 1\n                ) as last_login,\n                (\n                    SELECT ip_address::text\n                    FROM account_activity\n                    WHERE account_id = a.id AND event_type = 'login_success'\n                    ORDER BY created_at DESC\n                    LIMIT 1\n                ) as last_ip,\n                COALESCE((\n                    SELECT COUNT(*)\n                    FROM account_activity\n                    WHERE account_id = a.id AND event_type = 'login_success'\n                ), 0) as \"login_count!\",\n                COALESCE((\n                    SELECT COUNT(*)\n                    FROM account_activity\n                    WHERE account_id = a.id AND event_type = 'login_failed'\n                ), 0) as \"failed_count!\"\n            FROM accounts a\n            WHERE NOT EXISTS (\n                SELECT 1 FROM account_activity\n                WHERE account_id = a.id\n                  AND event_type = 'login_success'\n                  AND created_at > NOW() - ($1 || ' days')::interval\n            )\n            ORDER BY a.username\n            ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "account_id!",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 1,
+        "name": "username!",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 2,
+        "name": "is_admin!",
+        "type_info": "Bool"
+      },
+      {
+        "ordinal": 3,
+        "name": "last_login",
+        "type_info": "Timestamptz"
+      },
+      {
+        "ordinal": 4,
+        "name": "last_ip",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 5,
+        "name": "login_count!",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 6,
+        "name": "failed_count!",
+        "type_info": "Int8"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Text"
+      ]
+    },
+    "nullable": [
+      false,
+      false,
+      true,
+      null,
+      null,
+      null,
+      null
+    ]
+  },
+  "hash": "7de3dd246bb4e261a0a6c7a18d74857b5ed2bac47c179d43e13cc71d8f1976d2"
+}

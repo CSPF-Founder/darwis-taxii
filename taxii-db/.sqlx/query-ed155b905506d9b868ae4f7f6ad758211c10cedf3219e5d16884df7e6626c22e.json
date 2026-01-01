@@ -1,0 +1,14 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "DELETE FROM account_activity\n               WHERE created_at < NOW() - ($1 || ' days')::interval",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Text"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "ed155b905506d9b868ae4f7f6ad758211c10cedf3219e5d16884df7e6626c22e"
+}

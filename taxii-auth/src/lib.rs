@@ -7,6 +7,7 @@ pub mod error;
 pub mod password;
 
 use std::collections::HashMap;
+use std::net::IpAddr;
 
 use chrono::{Duration, Utc};
 use jsonwebtoken::{DecodingKey, EncodingKey, Header, Validation, decode, encode};
@@ -16,7 +17,27 @@ use tracing::warn;
 pub use error::{AuthError, AuthResult};
 
 use taxii_core::Account as AccountEntity;
-use taxii_db::{Account, TaxiiPool, validate_permissions};
+use taxii_db::{Account, AccountActivity, EventType, TaxiiPool, validate_permissions};
+
+/// Client information for activity logging.
+#[derive(Debug, Clone, Default)]
+pub struct ClientInfo {
+    /// Client IP address.
+    pub ip_address: Option<IpAddr>,
+    /// Client user agent string.
+    pub user_agent: Option<String>,
+}
+
+impl ClientInfo {
+    /// Create new client info.
+    #[must_use]
+    pub fn new(ip_address: Option<IpAddr>, user_agent: Option<String>) -> Self {
+        Self {
+            ip_address,
+            user_agent,
+        }
+    }
+}
 
 /// Convert Account (database model) to AccountEntity (domain entity).
 fn account_to_entity(account: &Account) -> AccountEntity {
@@ -76,16 +97,90 @@ impl AuthAPI {
     }
 
     /// Authenticate user and return JWT token.
+    ///
+    /// This is a simple version without activity logging.
+    /// Use `authenticate_with_logging` when client info is available.
     pub async fn authenticate(&self, username: &str, password: &str) -> AuthResult<Option<String>> {
+        self.authenticate_internal(username, password, None).await
+    }
+
+    /// Authenticate user with activity logging.
+    ///
+    /// Logs successful and failed login attempts in the background
+    /// without blocking the authentication response.
+    pub async fn authenticate_with_logging(
+        &self,
+        username: &str,
+        password: &str,
+        client_info: ClientInfo,
+    ) -> AuthResult<Option<String>> {
+        self.authenticate_internal(username, password, Some(client_info))
+            .await
+    }
+
+    /// Internal authentication logic.
+    async fn authenticate_internal(
+        &self,
+        username: &str,
+        password: &str,
+        client_info: Option<ClientInfo>,
+    ) -> AuthResult<Option<String>> {
         let account = Account::find_by_username(&self.pool, username).await?;
 
         let account = match account {
             Some(a) => a,
-            None => return Ok(None),
+            None => {
+                // Log failed attempt for unknown username (fire-and-forget)
+                if let Some(info) = client_info {
+                    let pool = self.pool.clone();
+                    let username = username.to_string();
+                    tokio::spawn(async move {
+                        let _ = AccountActivity::log_failed_by_username(
+                            &pool,
+                            &username,
+                            info.ip_address,
+                            info.user_agent.as_deref(),
+                        )
+                        .await;
+                    });
+                }
+                return Ok(None);
+            }
         };
 
         if !password::check_password_hash(&account.password_hash, password) {
+            // Log failed login attempt (fire-and-forget)
+            if let Some(info) = client_info {
+                let pool = self.pool.clone();
+                let account_id = account.id;
+                tokio::spawn(async move {
+                    let _ = AccountActivity::log(
+                        &pool,
+                        account_id,
+                        EventType::LoginFailed,
+                        info.ip_address,
+                        info.user_agent.as_deref(),
+                    )
+                    .await;
+                });
+            }
             return Ok(None);
+        }
+
+        // Log successful login (fire-and-forget)
+        if let Some(info) = client_info {
+            let pool = self.pool.clone();
+            let account_id = account.id;
+            tokio::spawn(async move {
+                let _ = AccountActivity::log(
+                    &pool,
+                    account_id,
+                    EventType::LoginSuccess,
+                    info.ip_address,
+                    info.user_agent.as_deref(),
+                )
+                .await;
+            });
         }
 
         let token = self.generate_token(account.id, Some(self.token_ttl_secs))?;

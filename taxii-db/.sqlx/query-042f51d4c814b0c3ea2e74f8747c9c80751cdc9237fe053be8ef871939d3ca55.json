@@ -1,0 +1,17 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "INSERT INTO account_activity (account_id, event_type, ip_address, user_agent)\n               VALUES ($1, $2, $3::text::inet, $4)",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Int4",
+        "Varchar",
+        "Text",
+        "Text"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "042f51d4c814b0c3ea2e74f8747c9c80751cdc9237fe053be8ef871939d3ca55"
+}

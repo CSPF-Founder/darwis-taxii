@@ -1,9 +1,10 @@
 //! Router setup.
 
+use std::net::IpAddr;
 use std::sync::Arc;
 
 use axum::extract::State;
-use axum::http::StatusCode;
+use axum::http::{StatusCode, header::USER_AGENT};
 use axum::response::IntoResponse;
 use axum::routing::{get, post};
 use axum::{Json, Router};
@@ -13,7 +14,7 @@ use tracing::error;
 
 use taxii_1x::HandlerRegistry;
 use taxii_2x::{Taxii2Config, Taxii2State};
-use taxii_auth::AuthAPI;
+use taxii_auth::{AuthAPI, ClientInfo};
 use taxii_core::{HookRegistry, SharedHookRegistry};
 use taxii_db::{DbTaxii1Repository, DbTaxii2Repository};
 
@@ -50,9 +51,44 @@ struct ManagementState {
     auth: Arc<AuthAPI>,
 }
 
+/// Extract client IP from headers or connection.
+fn extract_client_ip(headers: &axum::http::HeaderMap) -> Option<IpAddr> {
+    // Try X-Forwarded-For first (for reverse proxies)
+    if let Some(xff) = headers.get("x-forwarded-for") {
+        if let Ok(xff_str) = xff.to_str() {
+            // Take the first IP in the chain (original client)
+            if let Some(first_ip) = xff_str.split(',').next() {
+                if let Ok(ip) = first_ip.trim().parse() {
+                    return Some(ip);
+                }
+            }
+        }
+    }
+
+    // Try X-Real-IP
+    if let Some(xri) = headers.get("x-real-ip") {
+        if let Ok(xri_str) = xri.to_str() {
+            if let Ok(ip) = xri_str.trim().parse() {
+                return Some(ip);
+            }
+        }
+    }
+
+    None
+}
+
+/// Extract user agent from headers.
+fn extract_user_agent(headers: &axum::http::HeaderMap) -> Option<String> {
+    headers
+        .get(USER_AGENT)
+        .and_then(|h| h.to_str().ok())
+        .map(|s| s.to_string())
+}
+
 /// Auth handler - authenticate user and return JWT token.
 async fn auth_handler(
     State(state): State<Arc<ManagementState>>,
+    headers: axum::http::HeaderMap,
     Json(req): Json<AuthRequest>,
 ) -> impl IntoResponse {
     if req.username.is_empty() || req.password.is_empty() {
@@ -63,7 +99,13 @@ async fn auth_handler(
             .into_response();
     }
 
-    match state.auth.authenticate(&req.username, &req.password).await {
+    let client_info = ClientInfo::new(extract_client_ip(&headers), extract_user_agent(&headers));
+
+    match state
+        .auth
+        .authenticate_with_logging(&req.username, &req.password, client_info)
+        .await
+    {
         Ok(Some(token)) => Json(AuthResponse { token }).into_response(),
         Ok(None) => StatusCode::UNAUTHORIZED.into_response(),
         Err(e) => {

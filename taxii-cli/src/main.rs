@@ -82,6 +82,12 @@ enum Commands {
         action: commands::account::AccountAction,
     },
 
+    /// View credential usage and manage activity logs.
+    Activity {
+        #[command(subcommand)]
+        action: commands::activity::ActivityAction,
+    },
+
     /// Run database migrations.
     Migrate {
         #[command(subcommand)]
@@ -221,6 +227,9 @@ async fn run(cli: Cli) -> Result<(), Box<dyn std::error::Error>> {
     match cli.command {
         Commands::Account { action } => {
             commands::account::handle(pool, &config.auth_secret, action).await?;
+        }
+        Commands::Activity { action } => {
+            commands::activity::handle(pool, action).await?;
         }
         Commands::Migrate { action } => {
             commands::migrate::handle(pool, action).await?;

@@ -1,17 +1,18 @@
 //! Authentication middleware.
 
+use std::net::IpAddr;
 use std::sync::Arc;
 use std::task::{Context, Poll};
 
 use axum::extract::Request;
-use axum::http::{StatusCode, header::AUTHORIZATION};
+use axum::http::{StatusCode, header::AUTHORIZATION, header::USER_AGENT};
 use axum::response::{IntoResponse, Response};
 use base64::{Engine, engine::general_purpose::STANDARD as BASE64};
 use futures::future::BoxFuture;
 use tower::{Layer, Service};
 use tracing::{error, warn};
 
-use taxii_auth::AuthAPI;
+use taxii_auth::{AuthAPI, ClientInfo};
 use taxii_core::Account;
 
 /// Authentication error that results in 401 response.
@@ -84,6 +85,9 @@ where
         // Extract auth info from headers before async
         let extract_result = extract_auth_info(&req, support_basic_auth);
 
+        // Extract client info for activity logging
+        let client_info = ClientInfo::new(extract_client_ip(&req), extract_user_agent(&req));
+
         Box::pin(async move {
             match extract_result {
                 ExtractResult::NoHeader | ExtractResult::Invalid => {
@@ -96,7 +100,7 @@ where
                 }
                 ExtractResult::Success(auth_type, token_or_creds) => {
                     // Try to authenticate
-                    match authenticate(&auth, auth_type, token_or_creds).await {
+                    match authenticate(&auth, auth_type, token_or_creds, client_info).await {
                         AuthResult::Success(account) => {
                             req.extensions_mut().insert(account);
                             inner.call(req).await
@@ -175,11 +179,55 @@ enum AuthResult {
     Unauthorized(&'static str),
 }
 
+/// Extract client IP from headers.
+fn extract_client_ip(req: &Request) -> Option<IpAddr> {
+    let headers = req.headers();
+
+    // Try X-Forwarded-For first (for reverse proxies)
+    if let Some(xff) = headers.get("x-forwarded-for") {
+        if let Ok(xff_str) = xff.to_str() {
+            if let Some(first_ip) = xff_str.split(',').next() {
+                if let Ok(ip) = first_ip.trim().parse() {
+                    return Some(ip);
+                }
+            }
+        }
+    }
+
+    // Try X-Real-IP
+    if let Some(xri) = headers.get("x-real-ip") {
+        if let Ok(xri_str) = xri.to_str() {
+            if let Ok(ip) = xri_str.trim().parse() {
+                return Some(ip);
+            }
+        }
+    }
+
+    None
+}
+
+/// Extract user agent from request headers.
+fn extract_user_agent(req: &Request) -> Option<String> {
+    req.headers()
+        .get(USER_AGENT)
+        .and_then(|h| h.to_str().ok())
+        .map(|s| s.to_string())
+}
+
 /// Authenticate from extracted auth info.
-async fn authenticate(auth: &AuthAPI, _auth_type: String, info: AuthInfo) -> AuthResult {
+async fn authenticate(
+    auth: &AuthAPI,
+    _auth_type: String,
+    info: AuthInfo,
+    client_info: ClientInfo,
+) -> AuthResult {
     let token = match info {
         AuthInfo::Basic(username, password) => {
-            match auth.authenticate(&username, &password).await {
+            // Use logging variant for basic auth (direct credential usage)
+            match auth
+                .authenticate_with_logging(&username, &password, client_info)
+                .await
+            {
                 Ok(Some(token)) => token,
                 Ok(None) => return AuthResult::Unauthorized("Authentication failed"),
                 Err(_) => return AuthResult::Unauthorized("Authentication error"),

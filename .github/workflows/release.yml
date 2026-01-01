@@ -46,13 +46,17 @@ jobs:
     runs-on: ${{ matrix.os }}
     container: ${{ matrix.container || null }}
     steps:
-      - uses: actions/checkout@v4
-
-      - name: Install build dependencies (Debian container)
+      - name: Install dependencies (Debian container)
         if: matrix.container != ''
         run: |
           apt-get update
-          apt-get install -y curl build-essential pkg-config libssl-dev
+          apt-get install -y curl git build-essential pkg-config libssl-dev jq zip
+
+      - uses: actions/checkout@v4
+
+      - name: Setup GitHub CLI (container)
+        if: matrix.container != ''
+        uses: actions4gh/setup-gh@v1
 
       - uses: actions-rust-lang/setup-rust-toolchain@v1
 

@@ -23,3 +23,7 @@ jobs:
         with:
           toolchain: stable
       - uses: actions-rust-lang/audit@v1
+        with:
+          # Ignore RUSTSEC-2023-0071: RSA timing sidechannel (Marvin Attack)
+          # No patch available, low risk for our use case (server-side JWT validation)
+          ignore: RUSTSEC-2023-0071

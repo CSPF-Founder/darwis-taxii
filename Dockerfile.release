@@ -1,0 +1,29 @@
+# syntax=docker/dockerfile:1
+#
+# Dockerfile for release builds using pre-built binaries.
+# Used by docker-release.yml workflow - downloads binaries from GitHub releases.
+#
+# For local development, use the standard Dockerfile which compiles from source.
+
+FROM debian:bookworm-slim
+
+# Install ca-certificates for HTTPS
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends ca-certificates && \
+    rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+
+# Copy pre-built binaries based on target architecture
+# TARGETARCH is provided by Docker buildx (amd64 or arm64)
+ARG TARGETARCH
+COPY binaries/${TARGETARCH}/taxii-server /app/taxii-server
+COPY binaries/${TARGETARCH}/taxii-cli /app/taxii-cli
+RUN chmod +x /app/taxii-server /app/taxii-cli
+
+# Copy migrations for CLI to run
+COPY migrations /app/migrations
+
+EXPOSE 9000
+
+CMD ["/app/taxii-server"]

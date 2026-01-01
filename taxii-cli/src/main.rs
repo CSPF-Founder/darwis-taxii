@@ -149,24 +149,22 @@ impl ResolvedConfig {
 
         // Load TOML config if file exists
         let toml_config = match &config_path {
-            Some(path) if Path::new(path).exists() => {
-                match std::fs::read_to_string(path) {
-                    Ok(content) => match toml::from_str(&content) {
-                        Ok(config) => {
-                            if cli.verbose {
-                                eprintln!("Loaded config from: {}", path);
-                            }
-                            config
+            Some(path) if Path::new(path).exists() => match std::fs::read_to_string(path) {
+                Ok(content) => match toml::from_str(&content) {
+                    Ok(config) => {
+                        if cli.verbose {
+                            eprintln!("Loaded config from: {}", path);
                         }
-                        Err(e) => {
-                            return Err(format!("Failed to parse TOML config: {}", e));
-                        }
-                    },
-                    Err(e) => {
-                        return Err(format!("Failed to read config file: {}", e));
+                        config
                     }
+                    Err(e) => {
+                        return Err(format!("Failed to parse TOML config: {}", e));
+                    }
+                },
+                Err(e) => {
+                    return Err(format!("Failed to read config file: {}", e));
                 }
-            }
+            },
             _ => TomlConfig::default(),
         };
 

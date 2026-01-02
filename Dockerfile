@@ -34,6 +34,9 @@ RUN apt-get update && \
     apt-get install -y --no-install-recommends ca-certificates && \
     rm -rf /var/lib/apt/lists/*
 
+# Create non-root user
+RUN useradd --create-home --shell /bin/bash taxii
+
 WORKDIR /app
 
 # Copy binaries from builder
@@ -42,6 +45,10 @@ COPY --from=builder /taxii-cli /app/taxii-cli
 
 # Copy migrations for CLI to run
 COPY migrations /app/migrations
+
+# Set ownership and switch to non-root user
+RUN chown -R taxii:taxii /app
+USER taxii
 
 EXPOSE 9000
 

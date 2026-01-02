@@ -1,5 +1,7 @@
 # DARWIS TAXII
 
+[![Docker Hub](https://img.shields.io/docker/v/cysecurity/darwis-taxii?label=Docker%20Hub&logo=docker)](https://hub.docker.com/r/cysecurity/darwis-taxii)
+
 A high-performance TAXII (Trusted Automated eXchange of Indicator Information) server written in Rust.
 
 Rust port of [EclecticIQ OpenTAXII](https://github.com/EclecticIQ/OpenTAXII) with full database compatibility.

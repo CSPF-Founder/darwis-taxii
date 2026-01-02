@@ -7,7 +7,37 @@ This guide covers the basic steps to install and run DARWIS TAXII.
 - PostgreSQL 9.4+ (minimal version to ensure compatibility with existing OpenTAXII instances)
 - Docker (optional, for containerized deployment)
 
-## Option 1: Docker (Recommended)
+## Option 1: Docker from Docker Hub (Recommended)
+
+Pull and run directly from [Docker Hub](https://hub.docker.com/r/cysecurity/darwis-taxii):
+
+```bash
+# Pull the latest image
+docker pull cysecurity/darwis-taxii:latest
+
+# Create a working directory
+mkdir -p darwis-taxii/config && cd darwis-taxii
+
+# Download example configuration files
+curl -o config/taxii.toml https://raw.githubusercontent.com/CSPF-Founder/darwis-taxii/main/taxii.example.toml
+curl -o config/data-config.yaml https://raw.githubusercontent.com/CSPF-Founder/darwis-taxii/main/examples/data-config/full.yaml
+curl -o docker-compose.yml https://raw.githubusercontent.com/CSPF-Founder/darwis-taxii/main/examples/docker/docker-compose.yml
+
+# Edit configuration files as needed (optional)
+# - config/taxii.toml: server settings, domain, auth options
+# - config/data-config.yaml: services, collections, accounts
+
+# Start the server with PostgreSQL
+docker compose up -d
+
+# Sync data configuration
+docker compose exec taxii-server ./taxii-cli sync /app/config/data-config.yaml
+
+# Verify it's running
+curl http://localhost:9000/taxii2/
+```
+
+## Option 2: Docker from Source
 
 ```bash
 # Clone the repository
@@ -25,7 +55,7 @@ docker compose up -d
 curl http://localhost:9000/taxii2/
 ```
 
-## Option 2: From Source
+## Option 3: From Source
 
 ```bash
 # Clone and build

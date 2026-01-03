@@ -98,10 +98,6 @@ enum Commands {
     Sync {
         /// Path to YAML configuration file.
         config: String,
-
-        /// Force deletion of collections not in config.
-        #[arg(short, long, default_value = "false")]
-        force_delete: bool,
     },
 
     /// Delete content blocks from collections.
@@ -236,15 +232,8 @@ async fn run(cli: Cli) -> Result<(), Box<dyn std::error::Error>> {
         }
         Commands::Sync {
             config: yaml_config,
-            force_delete,
         } => {
-            commands::persistence::handle_sync(
-                pool,
-                &config.auth_secret,
-                &yaml_config,
-                force_delete,
-            )
-            .await?;
+            commands::persistence::handle_sync(pool, &config.auth_secret, &yaml_config).await?;
         }
         Commands::Content { action } => {
             commands::persistence::handle_content(pool, action).await?;

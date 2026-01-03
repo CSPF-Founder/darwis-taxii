@@ -21,24 +21,19 @@ Database URL can also be set via `DATABASE_URL` environment variable.
 
 ### sync
 
-Synchronize TAXII 1.x configuration from YAML file.
+Synchronize configuration from YAML file. Manages services, collections, and accounts.
 
 ```bash
-taxii-cli sync <CONFIG_FILE> [OPTIONS]
+taxii-cli sync <CONFIG_FILE>
 ```
-
-| Option | Description |
-|--------|-------------|
-| `--force-delete` | Delete collections not in config (default: disable) |
 
 **Examples:**
 ```bash
 # Sync configuration
 taxii-cli sync data-config.yaml
-
-# Force delete removed collections
-taxii-cli sync data-config.yaml --force-delete
 ```
+
+The sync behavior is controlled via YAML options (not CLI flags). See [Sync Configuration](#sync-configuration) below.
 
 ### api-root
 
@@ -179,6 +174,104 @@ taxii-cli content delete \
 | `DATABASE_URL` | PostgreSQL connection string |
 | `DARWIS_TAXII_CONFIG` | Path to taxii.toml |
 | `DARWIS_TAXII_AUTH_SECRET` | JWT signing secret |
+
+## Sync Configuration
+
+The `sync` command behavior is controlled entirely via YAML options, making configuration declarative and version-controllable.
+
+### YAML Structure
+
+```yaml
+# Entity cleanup behavior (what happens to entities NOT in this file)
+prune_services: false            # Delete services not in config (default: false)
+collections_not_in_config: ignore # ignore | disable | delete (default: ignore)
+prune_accounts: false            # Delete accounts not in config (default: false)
+
+# Entity definitions
+services:
+  - id: discovery
+    type: DISCOVERY
+    # ...
+
+collections:
+  - name: my-collection
+    # ...
+
+accounts:
+  - username: admin
+    # ...
+```
+
+### Cleanup Options
+
+| Option | Values | Default | Description |
+|--------|--------|---------|-------------|
+| `prune_services` | `true`/`false` | `false` | Delete services not in config |
+| `collections_not_in_config` | `ignore`/`disable`/`delete` | `ignore` | Action for collections not in config |
+| `prune_accounts` | `true`/`false` | `false` | Delete accounts not in config |
+
+### Collection Cleanup Actions
+
+Collections support three actions since they have an "available" flag:
+
+| Value | Behavior |
+|-------|----------|
+| `ignore` | Leave untouched (default) |
+| `disable` | Set `available=false` |
+| `delete` | Permanently delete |
+
+> [!CAUTION]
+> `delete` permanently removes collections and their content. Use with care.
+
+### Common Patterns
+
+**Additive sync (default):** Only create/update, never delete:
+```yaml
+# All cleanup options default to safe values
+services:
+  - id: inbox
+    # ...
+```
+
+**Full declarative control:** Config is the source of truth:
+```yaml
+prune_services: true
+collections_not_in_config: delete
+prune_accounts: true
+
+services:
+  # Only these services will exist
+collections:
+  # Only these collections will exist
+accounts:
+  # Only these accounts will exist
+```
+
+**Accounts-only sync:** Manage accounts without affecting other entities:
+```yaml
+prune_accounts: true
+# prune_services and collections_not_in_config default to safe values
+
+accounts:
+  - username: admin
+    password: secret
+    is_admin: true
+```
+
+### Collection Reference Validation
+
+When syncing accounts, all collection references in permissions are validated:
+
+- TAXII 1.x permissions: collection name must exist
+- TAXII 2.x permissions: collection UUID must exist
+
+If any referenced collection doesn't exist, the sync fails with an error:
+
+```
+Account 'analyst' references non-existent collections:
+  - 'invalid-collection' (TAXII 1.x)
+  - '00000000-0000-0000-0000-000000000000' (TAXII 2.x)
+```
 
 ## Examples
 

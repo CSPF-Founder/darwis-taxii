@@ -294,4 +294,16 @@ impl DataCollection {
 
         Ok(())
     }
+
+    /// Check if a collection with the given name exists.
+    pub async fn exists_by_name(pool: &TaxiiPool, name: &str) -> DatabaseResult<bool> {
+        let result = sqlx::query_scalar!(
+            r#"SELECT EXISTS(SELECT 1 FROM data_collections WHERE name = $1) as "exists!""#,
+            name
+        )
+        .fetch_one(pool.inner())
+        .await?;
+
+        Ok(result)
+    }
 }

@@ -144,21 +144,42 @@ To update an existing configuration:
 1. Edit `data-config.yaml`
 2. Run `taxii-cli sync data-config.yaml` again
 
-The sync command:
-- Creates new services/collections
-- Updates existing ones
-- Disables collections removed from config (unless `--force-delete`)
+The sync command creates and updates entities. To control what happens to entities not in your config file, use YAML-level options:
 
-### Force Delete
+### Cleanup Options
 
-To actually delete collections not in the config:
+```yaml
+# At the top of your YAML file
+prune_services: false            # Delete services not in config
+collections_not_in_config: ignore # ignore | disable | delete
+prune_accounts: false            # Delete accounts not in config
 
-```bash
-taxii-cli sync data-config.yaml --force-delete
+services:
+  # ...
+collections:
+  # ...
+accounts:
+  # ...
 ```
 
+| Option | Values | Default | Description |
+|--------|--------|---------|-------------|
+| `prune_services` | `true`/`false` | `false` | Delete services not in config |
+| `collections_not_in_config` | `ignore`/`disable`/`delete` | `ignore` | Action for collections not in config |
+| `prune_accounts` | `true`/`false` | `false` | Delete accounts not in config |
+
+### Collection Actions
+
+Collections support three cleanup actions:
+
+| Value | Behavior |
+|-------|----------|
+| `ignore` | Leave untouched (default) |
+| `disable` | Set `available=false` |
+| `delete` | Permanently delete |
+
 > [!CAUTION]
-> This permanently deletes collections and their content.
+> `collections_not_in_config: delete` permanently deletes collections and their content.
 
 ## Verify Configuration
 

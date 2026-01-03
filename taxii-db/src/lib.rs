@@ -22,7 +22,10 @@ pub use manager::DatabaseManager;
 pub use pool::{PoolOptions, TaxiiPool};
 
 // Auth models
-pub use models::account::{Account, TAXII1_PERMISSIONS, TAXII2_PERMISSIONS, validate_permissions};
+pub use models::account::{
+    Account, InvalidCollectionRef, TAXII1_PERMISSIONS, TAXII2_PERMISSIONS,
+    validate_collection_references, validate_permissions,
+};
 pub use models::account_activity::{AccountActivity, AccountUsageSummary, EventType};
 
 // TAXII 1.x models

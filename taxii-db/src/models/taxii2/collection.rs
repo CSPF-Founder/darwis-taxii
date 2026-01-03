@@ -146,4 +146,16 @@ impl Collection {
 
         Ok(result.rows_affected() > 0)
     }
+
+    /// Check if a collection with the given UUID exists.
+    pub async fn exists(pool: &TaxiiPool, id: Uuid) -> DatabaseResult<bool> {
+        let result = sqlx::query_scalar!(
+            r#"SELECT EXISTS(SELECT 1 FROM opentaxii_collection WHERE id = $1) as "exists!""#,
+            id
+        )
+        .fetch_one(pool.inner())
+        .await?;
+
+        Ok(result)
+    }
 }

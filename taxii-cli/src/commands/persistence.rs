@@ -9,7 +9,7 @@ use taxii_auth::AuthAPI;
 use taxii_core::{CollectionEntity, ContentBindingEntity, PermissionValue, ServiceEntity};
 use taxii_db::{
     DbTaxii1Repository, TAXII1_PERMISSIONS, TAXII2_PERMISSIONS, Taxii1Repository, TaxiiPool,
-    validate_permissions,
+    validate_collection_references, validate_permissions,
 };
 use tracing::{debug, info};
 
@@ -36,9 +36,31 @@ pub enum ContentAction {
     },
 }
 
+/// Action for collections not in config.
+#[derive(Debug, Default, Deserialize, PartialEq, Eq)]
+#[serde(rename_all = "lowercase")]
+enum CollectionNotInConfig {
+    /// Leave untouched (default).
+    #[default]
+    Ignore,
+    /// Set available=false.
+    Disable,
+    /// Delete from database.
+    Delete,
+}
+
 /// YAML configuration structure.
 #[derive(Debug, Deserialize)]
 struct YamlConfig {
+    /// Delete services not in config.
+    #[serde(default)]
+    prune_services: bool,
+    /// Action for collections not in config.
+    #[serde(default)]
+    collections_not_in_config: CollectionNotInConfig,
+    /// Delete accounts not in config.
+    #[serde(default)]
+    prune_accounts: bool,
     #[serde(default)]
     services: Vec<ServiceConfig>,
     #[serde(default)]
@@ -119,7 +141,6 @@ pub async fn handle_sync(
     pool: TaxiiPool,
     auth_secret: &str,
     config_path: &str,
-    force_delete: bool,
 ) -> Result<(), Box<dyn std::error::Error>> {
     // Load YAML configuration
     let yaml_content = fs::read_to_string(config_path)?;
@@ -128,15 +149,18 @@ pub async fn handle_sync(
     let persistence = DbTaxii1Repository::new(pool.clone());
 
     // Sync services
-    sync_services(&persistence, &config.services).await?;
+    sync_services(&persistence, &config.services, config.prune_services).await?;
 
     // Sync collections
-    sync_collections(&persistence, &config.collections, force_delete).await?;
+    sync_collections(
+        &persistence,
+        &config.collections,
+        &config.collections_not_in_config,
+    )
+    .await?;
 
     // Sync accounts
-    if !config.accounts.is_empty() {
-        sync_accounts(&pool, auth_secret, &config.accounts).await?;
-    }
+    sync_accounts(&pool, auth_secret, &config.accounts, config.prune_accounts).await?;
 
     println!("Configuration synchronized successfully");
     Ok(())
@@ -146,6 +170,7 @@ pub async fn handle_sync(
 async fn sync_services(
     persistence: &DbTaxii1Repository,
     services: &[ServiceConfig],
+    prune: bool,
 ) -> Result<(), Box<dyn std::error::Error>> {
     let existing = persistence.get_services(None).await?;
     let existing_ids: std::collections::HashSet<_> =
@@ -174,13 +199,15 @@ async fn sync_services(
         }
     }
 
-    // Delete services not in config
+    // Delete services not in config (only if prune enabled)
     let mut deleted = 0;
-    for existing_id in existing_ids {
-        if !config_ids.contains(&existing_id) {
-            persistence.delete_service(&existing_id).await?;
-            deleted += 1;
-            debug!(id = %existing_id, "Service deleted");
+    if prune {
+        for existing_id in existing_ids {
+            if !config_ids.contains(&existing_id) {
+                persistence.delete_service(&existing_id).await?;
+                deleted += 1;
+                debug!(id = %existing_id, "Service deleted");
+            }
         }
     }
 
@@ -192,7 +219,7 @@ async fn sync_services(
 async fn sync_collections(
     persistence: &DbTaxii1Repository,
     collections: &[CollectionConfig],
-    force_delete: bool,
+    not_in_config: &CollectionNotInConfig,
 ) -> Result<(), Box<dyn std::error::Error>> {
     let existing = persistence.get_collections(None).await?;
     let existing_by_name: HashMap<_, _> = existing
@@ -268,35 +295,37 @@ async fn sync_collections(
     let mut deleted = 0;
     let mut disabled = 0;
 
-    for (name, existing_coll) in &existing_by_name {
-        if !config_names.contains(name) {
-            if force_delete {
-                persistence.delete_collection(name).await?;
-                deleted += 1;
-                debug!(name = %name, "Collection deleted");
-            } else {
-                // Disable collection
-                let entity = CollectionEntity {
-                    id: existing_coll.id,
-                    name: existing_coll.name.clone(),
-                    available: false,
-                    volume: existing_coll.volume,
-                    description: existing_coll.description.clone(),
-                    accept_all_content: existing_coll.accept_all_content,
-                    collection_type: existing_coll.collection_type.clone(),
-                    supported_content: existing_coll.supported_content.clone(),
-                };
-                persistence.update_collection(&entity).await?;
-                disabled += 1;
-                debug!(name = %name, "Collection disabled");
+    if *not_in_config != CollectionNotInConfig::Ignore {
+        for (name, existing_coll) in &existing_by_name {
+            if !config_names.contains(name) {
+                match not_in_config {
+                    CollectionNotInConfig::Ignore => unreachable!(),
+                    CollectionNotInConfig::Disable => {
+                        let entity = CollectionEntity {
+                            id: existing_coll.id,
+                            name: existing_coll.name.clone(),
+                            available: false,
+                            volume: existing_coll.volume,
+                            description: existing_coll.description.clone(),
+                            accept_all_content: existing_coll.accept_all_content,
+                            collection_type: existing_coll.collection_type.clone(),
+                            supported_content: existing_coll.supported_content.clone(),
+                        };
+                        persistence.update_collection(&entity).await?;
+                        disabled += 1;
+                        debug!(name = %name, "Collection disabled");
+                    }
+                    CollectionNotInConfig::Delete => {
+                        persistence.delete_collection(name).await?;
+                        deleted += 1;
+                        debug!(name = %name, "Collection deleted");
+                    }
+                }
             }
         }
     }
 
-    info!(
-        created,
-        updated, deleted, disabled, "Collections synchronized"
-    );
+    info!(created, updated, disabled, deleted, "Collections synchronized");
     Ok(())
 }
 
@@ -305,27 +334,54 @@ async fn sync_accounts(
     pool: &TaxiiPool,
     auth_secret: &str,
     accounts: &[AccountConfig],
+    prune: bool,
 ) -> Result<(), Box<dyn std::error::Error>> {
     let auth = AuthAPI::new(pool.clone(), auth_secret.to_string(), None)?;
 
+    // Phase 1: Validate all permissions before any database changes
+    let mut validated_accounts: Vec<(&AccountConfig, HashMap<String, PermissionValue>)> =
+        Vec::with_capacity(accounts.len());
+
+    for account_config in accounts {
+        // Convert permissions from YAML format to PermissionValue
+        let permissions = convert_permissions(&account_config.permissions)?;
+
+        // Validate permission values (read/modify/write)
+        // Note: TAXII 1.x uses collection name, TAXII 2.x uses collection UUID directly
+        validate_permissions(&permissions)?;
+
+        // Validate that all referenced collections exist
+        let invalid_refs = validate_collection_references(pool, &permissions).await?;
+        if !invalid_refs.is_empty() {
+            let refs_list: Vec<_> = invalid_refs
+                .iter()
+                .map(|r| format!("  - '{}' ({})", r.collection_ref, r.permission_type))
+                .collect();
+            return Err(format!(
+                "Account '{}' references non-existent collections:\n{}",
+                account_config.username,
+                refs_list.join("\n")
+            )
+            .into());
+        }
+
+        validated_accounts.push((account_config, permissions));
+    }
+
+    // Phase 2: All validations passed, now perform database operations
     let existing = auth.get_accounts().await?;
     let existing_by_name: HashMap<_, _> = existing
         .iter()
         .map(|a| (a.username.clone(), a.clone()))
         .collect();
 
+    let config_usernames: std::collections::HashSet<_> =
+        accounts.iter().map(|a| a.username.as_str()).collect();
+
     let mut created = 0;
     let mut updated = 0;
 
-    for account_config in accounts {
-        // Convert permissions from YAML format to PermissionValue
-        let permissions = convert_permissions(&account_config.permissions)?;
-
-        // Validate permissions
-        // Note: TAXII 1.x uses collection name, TAXII 2.x uses collection UUID directly
-        // No normalization is performed - users must use the correct identifier format
-        validate_permissions(&permissions)?;
-
+    for (account_config, permissions) in validated_accounts {
         if let Some(existing_account) = existing_by_name.get(&account_config.username) {
             // Update existing account
             let updated_account = taxii_core::Account {
@@ -367,7 +423,19 @@ async fn sync_accounts(
         }
     }
 
-    info!(created, updated, "Accounts synchronized");
+    // Phase 3: Delete accounts not in config (only if prune enabled)
+    let mut deleted = 0;
+    if prune {
+        for existing_account in &existing {
+            if !config_usernames.contains(existing_account.username.as_str()) {
+                auth.delete_account(&existing_account.username).await?;
+                deleted += 1;
+                debug!(username = %existing_account.username, "Account deleted");
+            }
+        }
+    }
+
+    info!(created, updated, deleted, "Accounts synchronized");
     Ok(())
 }
 

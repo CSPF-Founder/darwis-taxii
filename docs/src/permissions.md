@@ -173,7 +173,36 @@ taxii-cli sync data-config.yaml
 The sync command:
 - Creates new accounts
 - Updates existing account permissions
-- Does NOT delete accounts not in config
+- Validates all collection references exist (fails if any are missing)
+
+### Account Cleanup
+
+By default, accounts not in the config file are left untouched. To delete them:
+
+```yaml
+prune_accounts: true
+
+accounts:
+  - username: admin
+    # Only accounts listed here will remain
+```
+
+## Collection Validation
+
+Before any changes are made, the sync command validates that all collections referenced in permissions actually exist:
+
+- **TAXII 1.x**: Collection name must exist in `data_collections` table
+- **TAXII 2.x**: Collection UUID must exist in `opentaxii_collection` table
+
+If validation fails, no changes are made and an error is shown:
+
+```
+Account 'analyst' references non-existent collections:
+  - 'unknown-collection' (TAXII 1.x)
+  - '00000000-0000-0000-0000-000000000000' (TAXII 2.x)
+```
+
+This prevents permissions from referencing collections that don't exist, which could cause confusing behavior at runtime.
 
 ## Checking Permissions
 

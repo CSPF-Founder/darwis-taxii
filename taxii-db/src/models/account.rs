@@ -3,8 +3,11 @@
 use std::collections::HashMap;
 
 use sqlx::FromRow;
+use uuid::Uuid;
 
 use crate::error::{DatabaseError, DatabaseResult};
+use crate::models::taxii1::DataCollection;
+use crate::models::taxii2::Collection as Taxii2Collection;
 use crate::pool::TaxiiPool;
 use taxii_core::PermissionValue;
 
@@ -196,4 +199,55 @@ pub fn validate_permissions(permissions: &HashMap<String, PermissionValue>) -> R
         }
     }
     Ok(())
+}
+
+/// An invalid collection reference in account permissions.
+#[derive(Debug)]
+pub struct InvalidCollectionRef {
+    /// The collection reference (name for TAXII 1.x, UUID for TAXII 2.x).
+    pub collection_ref: String,
+    /// The permission type ("TAXII 1.x" or "TAXII 2.x").
+    pub permission_type: &'static str,
+}
+
+/// Validate that all collections referenced in permissions exist in the database.
+///
+/// For TAXII 1.x permissions: validates collection names exist in data_collections table.
+/// For TAXII 2.x permissions: validates collection UUIDs exist in opentaxii_collection table.
+///
+/// Returns a list of invalid collection references if any are found.
+pub async fn validate_collection_references(
+    pool: &TaxiiPool,
+    permissions: &HashMap<String, PermissionValue>,
+) -> DatabaseResult<Vec<InvalidCollectionRef>> {
+    let mut invalid_refs = Vec::new();
+
+    for (collection_ref, permission) in permissions {
+        let exists = match permission {
+            PermissionValue::Taxii1(_) => {
+                // TAXII 1.x: collection_ref is a collection name
+                DataCollection::exists_by_name(pool, collection_ref).await?
+            }
+            PermissionValue::Taxii2(_) => {
+                // TAXII 2.x: collection_ref should be a UUID
+                match Uuid::parse_str(collection_ref) {
+                    Ok(uuid) => Taxii2Collection::exists(pool, uuid).await?,
+                    Err(_) => false, // Invalid UUID format counts as non-existent
+                }
+            }
+        };
+
+        if !exists {
+            let permission_type = match permission {
+                PermissionValue::Taxii1(_) => "TAXII 1.x",
+                PermissionValue::Taxii2(_) => "TAXII 2.x",
+            };
+            invalid_refs.push(InvalidCollectionRef {
+                collection_ref: collection_ref.clone(),
+                permission_type,
+            });
+        }
+    }
+
+    Ok(invalid_refs)
 }

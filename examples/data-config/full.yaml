@@ -25,6 +25,24 @@
 #   taxii-cli collection list --api-root-id <uuid>  # Get collection UUIDs
 
 # =============================================================================
+# Sync Behavior Options
+# =============================================================================
+# Control what happens to entities NOT in this config file.
+# By default, all options are safe (no deletions).
+
+# Delete services not in this file (default: false)
+prune_services: false
+
+# Action for collections not in this file:
+#   ignore  - Leave untouched (default)
+#   disable - Set available=false
+#   delete  - Permanently delete
+collections_not_in_config: ignore
+
+# Delete accounts not in this file (default: false)
+prune_accounts: false
+
+# =============================================================================
 # TAXII 1.x Services
 # =============================================================================
 # Service types: DISCOVERY, INBOX, POLL, COLLECTION_MANAGEMENT

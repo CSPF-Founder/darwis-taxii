@@ -11,6 +11,18 @@
 #   4. taxii-cli collection list --api-root-id <uuid>  # Get collection UUID
 #   5. Edit data-config.yaml - replace example UUID with your collection UUID
 #   6. taxii-cli sync data-config.yaml
+#
+# Note: Account permissions referencing non-existent collections will fail
+# validation. Ensure all collection UUIDs exist before syncing.
+
+# =============================================================================
+# Sync Behavior Options
+# =============================================================================
+# Since this is accounts-only, services/collections options are left at defaults.
+
+# Delete accounts not in this file (default: false)
+# Set to true if this file should be the sole source of truth for accounts.
+prune_accounts: false
 
 accounts:
   # Admin - full access to all collections

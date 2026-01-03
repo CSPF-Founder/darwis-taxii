@@ -3100,7 +3100,7 @@ dependencies = [
 
 [[package]]
 name = "taxii-1x"
-version = "0.1.5"
+version = "0.1.7"
 dependencies = [
  "axum",
  "base64",
@@ -3119,7 +3119,7 @@ dependencies = [
 
 [[package]]
 name = "taxii-2x"
-version = "0.1.5"
+version = "0.1.7"
 dependencies = [
  "axum",
  "chrono",
@@ -3135,7 +3135,7 @@ dependencies = [
 
 [[package]]
 name = "taxii-auth"
-version = "0.1.5"
+version = "0.1.7"
 dependencies = [
  "base64",
  "chrono",
@@ -3155,7 +3155,7 @@ dependencies = [
 
 [[package]]
 name = "taxii-cli"
-version = "0.1.5"
+version = "0.1.7"
 dependencies = [
  "chrono",
  "clap",
@@ -3175,7 +3175,7 @@ dependencies = [
 
 [[package]]
 name = "taxii-core"
-version = "0.1.5"
+version = "0.1.7"
 dependencies = [
  "chrono",
  "config",
@@ -3191,7 +3191,7 @@ dependencies = [
 
 [[package]]
 name = "taxii-db"
-version = "0.1.5"
+version = "0.1.7"
 dependencies = [
  "base64",
  "chrono",
@@ -3207,7 +3207,7 @@ dependencies = [
 
 [[package]]
 name = "taxii-server"
-version = "0.1.5"
+version = "0.1.7"
 dependencies = [
  "axum",
  "base64",

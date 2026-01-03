@@ -1,0 +1,13 @@
+#!/bin/sh
+# Pre-push hook: Run tests before pushing
+# Setup: git config core.hooksPath .githooks
+
+set -e
+
+echo "Running tests..."
+SQLX_OFFLINE=true cargo test --workspace || {
+    echo "Tests failed."
+    exit 1
+}
+
+echo "Pre-push checks passed!"

@@ -30,10 +30,11 @@ accounts:
     password: adminpass
     is_admin: true
 
-  # Regular user with collection permissions
+  # Regular user with TAXII 2.x collection permissions
+  # Note: TAXII 2.x requires LIST format: [read], [write], or [read, write]
   - username: myuser
     password: mypass
     is_admin: false
     permissions:
-      # Replace with your collection UUID from step 3
+      # Replace with your collection UUID from step 4
       86c1741e-7e95-4b17-8940-a8f83eb5fe32: [read, write]

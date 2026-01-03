@@ -9,7 +9,11 @@ TAXII 1.x is an XML-based protocol for exchanging cyber threat intelligence. It 
 | **Transport** | HTTP POST with XML payloads |
 | **Content** | STIX 1.x (XML format) |
 | **Collection ID** | `name` (string identifier) |
+| **Collection Table** | `data_collections` |
 | **Configuration** | YAML file + `taxii-cli sync` |
+
+> [!NOTE]
+> TAXII 1.x collections are separate from TAXII 2.x collections. They use different storage and cannot be shared.
 
 ## Service Architecture
 

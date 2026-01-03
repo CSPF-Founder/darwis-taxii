@@ -29,7 +29,10 @@ accounts:
 
 ## Collection Keys
 
-**This is critical:** The permission key format differs between TAXII versions.
+> [!IMPORTANT]
+> TAXII 1.x and TAXII 2.x collections are **completely separate**. They are stored in different database tables and cannot be shared between protocols.
+
+**The permission key format differs between TAXII versions:**
 
 ### TAXII 1.x: Use Collection Name
 
@@ -85,9 +88,11 @@ permissions:
 
 ## Permission Values
 
-Both TAXII 1.x and 2.x style values are supported:
+**Critical:** The value format determines which protocol the permission applies to.
 
-### TAXII 1.x Style (String)
+### TAXII 1.x: String Values
+
+TAXII 1.x permissions use **string** values:
 
 ```yaml
 permissions:
@@ -95,20 +100,37 @@ permissions:
   other-collection: modify # Read + write
 ```
 
-### TAXII 2.x Style (List)
+| Value | Access |
+|-------|--------|
+| `read` | Read-only |
+| `modify` | Read + write |
+
+### TAXII 2.x: List Values
+
+TAXII 2.x permissions use **list** values:
 
 ```yaml
 permissions:
   86c1741e-...: [read]         # Read-only
-  24574d4d-...: [read, write]  # Full access
+  24574d4d-...: [write]        # Write-only (submit without reading)
+  f8c3e7a2-...: [read, write]  # Full access
 ```
 
-### Equivalence
+| Value | Access |
+|-------|--------|
+| `[read]` | Read-only |
+| `[write]` | Write-only |
+| `[read, write]` | Full access |
 
-| TAXII 1.x | TAXII 2.x | Access Level |
-|-----------|-----------|--------------|
-| `read` | `[read]` | Read-only |
-| `modify` | `[read, write]` | Read + Write |
+### Format Summary
+
+| Protocol | Key | Value Format | Example |
+|----------|-----|--------------|---------|
+| TAXII 1.x | Collection name | String | `my-collection: modify` |
+| TAXII 2.x | Collection UUID | List | `86c1741e-...: [read, write]` |
+
+> [!CAUTION]
+> Using the wrong format will cause validation errors. A UUID with a string value is treated as TAXII 1.x and will fail collection validation.
 
 ## Mixed Permissions
 

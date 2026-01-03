@@ -154,8 +154,12 @@ TAXII 2.x transports STIX 2.x objects as JSON bundles:
 | Style | Service-oriented | RESTful |
 | Operations | INBOX (push), POLL (pull) | POST/GET on endpoints |
 | Collection ID | Name (string) | UUID |
+| Collection Table | `data_collections` | `opentaxii_collection` |
 | Configuration | YAML + sync | CLI commands |
 | Content | STIX 1.x | STIX 2.x |
+
+> [!IMPORTANT]
+> Collections are **not shared** between protocols. A TAXII 1.x client cannot access TAXII 2.x collections and vice versa.
 
 ## Next Steps
 

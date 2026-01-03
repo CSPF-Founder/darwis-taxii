@@ -106,13 +106,16 @@ collections:
 # =============================================================================
 # User Accounts
 # =============================================================================
-# Permissions format (both work):
-#   String: read, modify
-#   Array:  [read], [read, write]
+# Permission format determines protocol type:
 #
-# Collection keys:
-#   TAXII 1.x: collection name (e.g., my-collection)
-#   TAXII 2.x: collection UUID (e.g., 86c1741e-7e95-4b17-8940-a8f83eb5fe32)
+#   TAXII 1.x (string values):
+#     collection-name: read     # Read-only
+#     collection-name: modify   # Read + write
+#
+#   TAXII 2.x (list values):
+#     collection-uuid: [read]         # Read-only
+#     collection-uuid: [write]        # Write-only
+#     collection-uuid: [read, write]  # Full access
 
 accounts:
   # Admin - full access to all collections
@@ -120,13 +123,13 @@ accounts:
     password: changeme
     is_admin: true
 
-  # Regular user with TAXII 1.x permissions
+  # Regular user with TAXII 1.x permissions (string values)
   - username: analyst
     password: analyst123
     is_admin: false
     permissions:
-      my-collection: [read, write]
-      another-collection: read
+      my-collection: modify        # Read + write
+      another-collection: read     # Read-only
 
   # Read-only user
   - username: reader
@@ -141,5 +144,5 @@ accounts:
   #   password: hybrid123
   #   is_admin: false
   #   permissions:
-  #     my-collection: [read, write]              # TAXII 1.x (by name)
-  #     86c1741e-...-a8f83eb5fe32: [read, write]  # TAXII 2.x (by UUID)
+  #     my-collection: modify                     # TAXII 1.x (string)
+  #     86c1741e-7e95-4b17-8940-a8f83eb5fe32: [read, write]  # TAXII 2.x (list)

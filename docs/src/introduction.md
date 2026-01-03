@@ -37,10 +37,16 @@ DARWIS TAXII supports both major versions of the TAXII specification:
 │  │ Poll Service          │  │  │ /taxii2/.../collections │  │
 │  │ Collection Management │  │  │ /taxii2/.../objects     │  │
 │  └───────────────────────┘  │  └─────────────────────────┘  │
+│            │                │              │                │
+│   data_collections table    │   opentaxii_collection table  │
+│      (separate storage)     │       (separate storage)      │
 ├─────────────────────────────┴───────────────────────────────┤
 │                     PostgreSQL Database                     │
 └─────────────────────────────────────────────────────────────┘
 ```
+
+> [!NOTE]
+> TAXII 1.x and TAXII 2.x use **separate collection storage**. Collections cannot be shared between protocols.
 
 ## When to Use Each Protocol
 

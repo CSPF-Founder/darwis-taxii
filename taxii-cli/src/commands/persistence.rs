@@ -325,7 +325,10 @@ async fn sync_collections(
         }
     }
 
-    info!(created, updated, disabled, deleted, "Collections synchronized");
+    info!(
+        created,
+        updated, disabled, deleted, "Collections synchronized"
+    );
     Ok(())
 }
 
